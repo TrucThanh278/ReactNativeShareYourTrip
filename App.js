@@ -1,21 +1,40 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import {
+	PaperProvider,
+	MD3LightTheme as DefaultTheme,
+} from "react-native-paper";
+import Post from "./components/posts/Post";
+import MyStyles from "./styles/MyStyles";
+import PostDetail from "./components/posts/PostDetail";
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
+import Profile from "./components/users/Profile";
+
+const theme = {
+	...DefaultTheme,
+	myOwnProperty: true,
+	colors: {
+		...MyStyles.lightTheme.colors,
+	},
+};
+
+const Stack = createStackNavigator();
+
+const MyStack = () => {
+	return (
+		<Stack.Navigator screenOptions={{ headerShown: false }}>
+			<Stack.Screen name="Profile" component={Profile} />
+			<Stack.Screen name="Home" component={Post} />
+			<Stack.Screen name="PostDetail" component={PostDetail} />
+		</Stack.Navigator>
+	);
+};
 
 export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+	return (
+		<PaperProvider theme={theme}>
+			<NavigationContainer>
+				<MyStack />
+			</NavigationContainer>
+		</PaperProvider>
+	);
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
