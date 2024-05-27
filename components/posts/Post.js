@@ -4,6 +4,7 @@ import {
 	View,
 	ScrollView,
 	TouchableHighlight,
+	TextInput,
 } from "react-native";
 import MyStyles from "../../styles/MyStyles";
 import Hashtag from "../hashtags/Hashtag";
@@ -17,9 +18,11 @@ import {
 } from "react-native-paper";
 import Styles from "./Styles";
 import PostImages from "./PostImages";
+import CommentsBottomSheet from "../comments/CommentsBottomSheet";
 import APIs, { endpoints } from "../../configs/APIs";
+import PostInfo from "../utils/PostInfo";
 
-const Post = () => {
+const Post = ({ navigation }) => {
 	const [loading, setLoading] = useState(true);
 	const [posts, setPosts] = useState(null);
 	const [page, setPage] = useState(1);
@@ -69,12 +72,14 @@ const Post = () => {
 					setPage(0);
 				}
 				if (page === 1) {
-					const postsData = postsResponse.data;
-					const postsWithImages = await handlePost(postsData);
+					const postsWithImages = await handlePost(
+						postsResponse.data
+					);
 					setPosts(postsWithImages);
 				} else {
-					const postsData = postsResponse.data;
-					const postsWithImages = await handlePost(postsData);
+					const postsWithImages = await handlePost(
+						postsResponse.data
+					);
 					setPosts((current) => {
 						return [...current, ...postsWithImages];
 					});
@@ -114,48 +119,17 @@ const Post = () => {
 			<View>
 				<Searchbar placeholder="Tìm chuyến đi..." />
 			</View>
-			<ScrollView style={Styles.backgroundColor} onScroll={loadMore}>
+			<ScrollView onScroll={loadMore}>
 				{posts === null ? (
 					<ActivityIndicator style={{ margin: 10 }} />
 				) : (
 					posts.map((post) => (
-						<Card
-							style={[MyStyles.margin, MyStyles.border]}
+						<PostInfo
+							post={post}
+							loading={loading}
+							navigation={navigation}
 							key={post.id}
-						>
-							<TouchableHighlight
-								activeOpacity={0.5}
-								underlayColor="#DDDDDD"
-								onPress={() => alert("Pressed!")}
-							>
-								<Card.Title
-									title={`${post.user.first_name} ${post.user.last_name}`}
-									subtitle="1090 followers"
-									left={(props) => (
-										<Avatar.Image
-											{...props}
-											size={50}
-											source={{
-												uri: post.user.avatar,
-											}}
-										/>
-									)}
-								/>
-							</TouchableHighlight>
-
-							<Card.Content style={{ margin: 0 }}>
-								<Title>{post.title}</Title>
-								<Paragraph>
-									{post.starting_point} to {post.end_point}
-								</Paragraph>
-								{<Hashtag hashtags={post.hashtags} />}
-							</Card.Content>
-							{loading && <ActivityIndicator />}
-							{<PostImages images={post.images} />}
-							<Card.Actions>
-								<Button>Comment</Button>
-							</Card.Actions>
-						</Card>
+						/>
 					))
 				)}
 			</ScrollView>

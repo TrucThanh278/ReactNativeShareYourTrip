@@ -27,16 +27,6 @@ export default StyleSheet.create({
 		height: 80,
 		borderRadius: 20,
 	},
-	// mainColor: {
-	// 	color: "#33582f",
-	// },
-	// backgroundColor: {
-	// 	backgroundColor: "#33582f",
-	// },
-	// borderColor: {
-	// 	borderColor: "#33582f",
-	// 	color: "#33582f",
-	// },
 	border: {
 		borderWidth: 0,
 		borderRadius: 0,
