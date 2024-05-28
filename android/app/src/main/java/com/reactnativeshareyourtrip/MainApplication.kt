@@ -1,4 +1,4 @@
-package com.shareyourtripapp
+package com.reactnativeshareyourtrip
 
 import android.app.Application
 import android.content.res.Configuration

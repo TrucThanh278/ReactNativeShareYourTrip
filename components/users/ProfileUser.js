@@ -1,37 +1,39 @@
-
-import React, { useEffect, useState, useContext } from "react";
-import { View, Image, Text, StyleSheet, TouchableOpacity,ScrollView } from "react-native";
-import { Button } from "react-native-paper";
-import { MyDispatchContext, MyUserContext } from "../../configs/Context";
-import MyStyles from "../../styles/MyStyles";
+import React, { useEffect, useState } from 'react';
+import { View, Image, Text, StyleSheet, TouchableOpacity,ScrollView  , Modal} from "react-native";
+import { Button } from 'react-native-paper';
+import MyStyles from '../../styles/MyStyles';
 import { FontAwesome } from '@expo/vector-icons';
-import * as ImagePicker from 'expo-image-picker';
+import { authApi, endpoints } from '../../configs/APIs';
+import ReportUserPage from './ReportUserPage'; 
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { authApi, endpoints } from '../../configs/APIs'; // Import các cấu hình API
 
-const Profile = ({ navigation }) => {
-    const dispatch = useContext(MyDispatchContext);
+const ProfileUser = ({ route }) => {
     const [user, setUser] = useState(null);
     const [avatar, setAvatar] = useState(null);
     const [coverPhoto, setCoverPhoto] = useState(null);
+    const [showReportModal, setShowReportModal] = useState(false);
+    const [token, setToken] = useState(null); // Thêm state mới để lưu token
 
     useEffect(() => {
         const fetchUserData = async () => {
             try {
-                const token = await AsyncStorage.getItem('token');
-                if (token) {
-                    const response = await authApi(token).get(endpoints['current-user']);
-                    setUser(response.data);
-                    setAvatar(response.data.avatar);
-                }
+                const { userId } = route.params;
+                const response = await authApi().get(`${endpoints['user-detail']}${userId}`);
+                setUser(response.data);
             } catch (error) {
                 console.error(error);
             }
         };
 
         fetchUserData();
-    }, []);
 
+        // Lấy token từ AsyncStorage khi component được render
+        AsyncStorage.getItem('token').then(token => {
+            setToken(token);
+        }).catch(error => {
+            console.error('Error retrieving token from AsyncStorage:', error);
+        });
+    }, [route.params]);
 
     const pickAvatar = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
@@ -59,6 +61,10 @@ const Profile = ({ navigation }) => {
         }
     };
 
+    const handleReport = () => {
+        setShowReportModal(true); // Hiển thị trang báo cáo khi người dùng nhấn vào nút báo cáo
+    };
+
     if (!user) {
         return <Text>Loading...</Text>;
     }
@@ -80,18 +86,41 @@ const Profile = ({ navigation }) => {
                     </TouchableOpacity>
                 </View>  
                 <View style={{marginTop: 25}}>
-                    <Text style={[styles.subject, styles.margin_left]}> {user.first_name} {user.last_name}</Text>
+                    <View style={[MyStyles.row]}>
+                        <Text style={[styles.subject, styles.margin_left]}> {user.first_name} {user.last_name}</Text>
+                        <Button icon="account-eye-outline">Follow</Button>
+                    </View>
                     <View style={[MyStyles.row]}>
                             <Text style={[styles.text, MyStyles.margin]}>Follower: {user.followers}</Text>
                             <Text style={[styles.text, MyStyles.margin]}>Following: {user.following}</Text>
+
                     </View>
                     <View style={styles.ratingContainer}>
                             <Text style={[styles.text]}>Reports: {user.reporter} </Text>
                     </View>
                     <Text style={styles.text}>Email: {user.email}</Text>
                     <Text style={styles.text}>Phone: {user.phone_number}</Text>
-                    <Button icon="pencil" buttonColor="rgb(79, 133, 13)" mode="contained" onPress={() => navigation.navigate('UpdateProfile')} >Update</Button>
-                    <Button icon="logout"  onPress={() => dispatch({ type: "logout" })}>Logout</Button>
+                    <Button  icon="message"  buttonColor="rgb(79, 133, 13)" mode="contained">Chat</Button>
+            <View>
+                {/* Content của ProfileUser */}
+                {/* ... */}
+                
+                {/* Button để báo cáo */}
+                <Button icon="alert-circle" title="Report" onPress={handleReport}>Report</Button>
+
+                {/* Modal hiển thị trang báo cáo */}
+                <Modal
+                    visible={showReportModal}
+                    animationType="slide"
+                    onRequestClose={() => setShowReportModal(false)}
+                >
+                    {/* Truyền userId và token xuống ReportUserPage */}
+                    <ReportUserPage userId={user.id} token={token} />
+                </Modal>
+
+                {/* Content khác của ProfileUser */}
+                {/* ... */}
+            </View>
 
                     <View style={styles.collections}>
                     <Text style={styles.sectionTitle}>Personal Collections</Text>
@@ -241,6 +270,10 @@ const styles = StyleSheet.create({
         top: 100,
         left: 10,
     },
+    margin_left_fo:{
+        marginLeft:190,
+        position: "absolute",
+    },
     margin_avatar: {
         marginTop: 30,
         alignItems: 'center',
@@ -276,5 +309,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default Profile;
-
+export default ProfileUser;

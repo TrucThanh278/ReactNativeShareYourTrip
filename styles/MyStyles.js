@@ -1,43 +1,34 @@
 import { StyleSheet } from "react-native";
 
 export default StyleSheet.create({
-	container: {
-		flex: 1,
-		marginTop: 50,
-	},
-	subject: {
-		fontSize: 25,
-		fontWeight: "bold",
-		color: "blue",
-	},
-	row: {
-		flexDirection: "row",
-	},
-	wrap: {
-		flexWrap: "wrap",
-	},
-	flexEnd: {
+    container: {
+        flex: 1,
+        marginTop: 50
+    }, subject: {
+        fontSize: 25,
+        fontWeight: "bold",
+        color: "blue"
+    }, row: {
+        flexDirection: 'row'
+    }, wrap: {
+        flexWrap: "wrap"
+    }, margin: {
+        margin: 5
+    }, avatar: {
+        width: 50,
+        height: 50,
+        borderRadius: 20
+        
+    }, name: {
+        color: "green",
+		fontWeight: 500
+    }, absolute: {
+        position: "absolute",
+    },
+    flexEnd: {
 		justifyContent: "flex-end",
 	},
-	margin: {
-		margin: 5,
-	},
-	avatar: {
-		width: 80,
-		height: 80,
-		borderRadius: 20,
-	},
-	// mainColor: {
-	// 	color: "#33582f",
-	// },
-	// backgroundColor: {
-	// 	backgroundColor: "#33582f",
-	// },
-	// borderColor: {
-	// 	borderColor: "#33582f",
-	// 	color: "#33582f",
-	// },
-	border: {
+    border: {
 		borderWidth: 0,
 		borderRadius: 0,
 	},
@@ -128,5 +119,5 @@ export default StyleSheet.create({
 			onSurfaceDisabled: "rgba(226, 227, 221, 0.38)",
 			backdrop: "rgba(44, 50, 42, 0.4)",
 		},
-	},
+    },
 });
