@@ -119,4 +119,7 @@ export default StyleSheet.create({
 			backdrop: "rgba(44, 50, 42, 0.4)",
 		},
 	},
+	sendIcon: {
+		marginLeft: 10,
+	},
 });

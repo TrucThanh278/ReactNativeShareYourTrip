@@ -1,52 +1,14 @@
-import { useEffect, useState } from "react";
-import {
-	ActivityIndicator,
-	View,
-	ScrollView,
-	TouchableHighlight,
-	TextInput,
-} from "react-native";
+import React, { useEffect, useState } from "react";
+import { View, ScrollView, ActivityIndicator } from "react-native";
+import { Searchbar } from "react-native-paper";
 import MyStyles from "../../styles/MyStyles";
-import Hashtag from "../hashtags/Hashtag";
-import {
-	Searchbar,
-	Avatar,
-	Button,
-	Card,
-	Title,
-	Paragraph,
-} from "react-native-paper";
-import Styles from "./Styles";
-import PostImages from "./PostImages";
-import CommentsBottomSheet from "../comments/CommentsBottomSheet";
 import APIs, { endpoints } from "../../configs/APIs";
-import PostInfo from "../utils/PostInfo";
+import PostInfo from "../utils/PostInfo"; // Import the PostInfo component
 
 const Post = ({ navigation }) => {
 	const [loading, setLoading] = useState(true);
-	const [posts, setPosts] = useState(null);
+	const [posts, setPosts] = useState([]);
 	const [page, setPage] = useState(1);
-
-	// const postsWithImages = await Promise.all(
-	// 	postsData.results.map(async (post) => {
-	// 		const imageResponse = await APIs.get(
-	// 			`${endpoints["posts"]}${post.id}/images/`
-	// 		);
-	// 		return { ...post, images: imageResponse.data };
-	// 	})
-	// );
-
-	// const loadImages = (postsData) => {
-	// 	postsData.map(async (post) => {
-	// 		const imageResponse = await APIs.get(
-	// 			`${endpoints["posts"]}${post.id}/images/`
-	// 		);
-	// 		return {
-	// 			...post,
-	// 			images: imageResponse.data,
-	// 		};
-	// 	});
-	// };
 
 	const handlePost = async (postsData) => {
 		const postsWithImages = await Promise.all(
@@ -72,17 +34,13 @@ const Post = ({ navigation }) => {
 					setPage(0);
 				}
 				if (page === 1) {
-					const postsWithImages = await handlePost(
-						postsResponse.data
-					);
+					const postsData = postsResponse.data;
+					const postsWithImages = await handlePost(postsData);
 					setPosts(postsWithImages);
 				} else {
-					const postsWithImages = await handlePost(
-						postsResponse.data
-					);
-					setPosts((current) => {
-						return [...current, ...postsWithImages];
-					});
+					const postsData = postsResponse.data;
+					const postsWithImages = await handlePost(postsData);
+					setPosts((current) => [...current, ...postsWithImages]);
 				}
 			} catch (error) {
 				console.error("There was an error fetching the posts", error);
@@ -120,15 +78,15 @@ const Post = ({ navigation }) => {
 				<Searchbar placeholder="Tìm chuyến đi..." />
 			</View>
 			<ScrollView onScroll={loadMore}>
-				{posts === null ? (
+				{loading && posts.length === 0 ? (
 					<ActivityIndicator style={{ margin: 10 }} />
 				) : (
 					posts.map((post) => (
 						<PostInfo
+							key={post.id}
 							post={post}
 							loading={loading}
 							navigation={navigation}
-							key={post.id}
 						/>
 					))
 				)}
