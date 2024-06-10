@@ -1,4 +1,4 @@
-package com.shareyourtripapp
+package com.reactnativeshareyourtrip
 
 import android.os.Build
 import android.os.Bundle

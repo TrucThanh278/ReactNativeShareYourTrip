@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "ShareYourTripApp",
-    "slug": "ShareYourTripApp",
+    "name": "ReactNativeShareYourTrip",
+    "slug": "ReactNativeShareYourTrip",
     "version": "1.0.0",
     "assetBundlePatterns": [
       "**/*"
     ]
   },
-  "name": "ShareYourTripApp"
+  "name": "ReactNativeShareYourTrip"
 }

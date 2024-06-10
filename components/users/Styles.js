@@ -1,63 +1,47 @@
 import { StyleSheet } from "react-native";
 
 export default StyleSheet.create({
-	container: {
-		flex: 1,
-		backgroundColor: "#fff",
-	},
-	header: {
-		flexDirection: "row",
-		alignItems: "center",
-		backgroundColor: "#f9f9f9",
-	},
-	headerTitle: {
-		flex: 1,
-		textAlign: "center",
-		fontSize: 20,
-		fontWeight: "bold",
-	},
-	profileContainer: {
-		flexDirection: "row",
-		padding: 20,
-		alignItems: "center",
-	},
-	avatar: {
-		marginRight: 20,
-	},
-	profileDetails: {
-		flex: 1,
-	},
-	name: {
-		fontSize: 24,
-		fontWeight: "bold",
-	},
-	followText: {
-		marginVertical: 5,
-	},
-	followButton: {
-		marginTop: 10,
-	},
-	collections: {
-		padding: 20,
-	},
-	sectionTitle: {
-		fontSize: 20,
-		fontWeight: "bold",
-		marginBottom: 10,
-	},
-	stats: {
-		padding: 20,
-	},
-	statItem: {
-		flexDirection: "row",
-		justifyContent: "space-between",
-		paddingVertical: 10,
-	},
-	statLabel: {
-		fontSize: 18,
-	},
-	statValue: {
-		fontSize: 18,
-		color: "#888",
-	},
-});
+    view:{
+        width: "100%",
+        // alignSelf: "center",
+        // marginTop: 70
+    },
+    input: {
+        width: "100%",
+        height: 50,
+        padding: 10,
+        marginBottom: 10,
+        marginTop: 15,
+        backgroundColor: "whitesmoke",
+        borderRadius: 5
+    },
+    title: {
+        fontSize: 30,
+        fontWeight: "100",
+        color: "white",
+    },
+    button: {
+        alignSelf:"center",
+        width: "60%",
+        height: 50,
+        textAlign: "center",
+        padding: 10,
+        backgroundColor: "green",
+        color:"white",
+        borderRadius: 10,
+        marginTop:20,
+        fontSize: 20,
+        color: "white"
+    }, 
+    image: {
+        width: 100,
+        height: 100,
+    },
+    imgBackGround: {
+        width: "100%",
+        height: "100%",
+        position: 'relative'
+    },
+    
+    
+})

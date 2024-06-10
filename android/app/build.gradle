@@ -83,9 +83,9 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace "com.shareyourtripapp"
+    namespace "com.reactnativeshareyourtrip"
     defaultConfig {
-        applicationId "com.shareyourtripapp"
+        applicationId "com.reactnativeshareyourtrip"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

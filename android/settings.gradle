@@ -1,4 +1,4 @@
-rootProject.name = 'ShareYourTripApp'
+rootProject.name = 'ReactNativeShareYourTrip'
 
 dependencyResolutionManagement {
   versionCatalogs {
