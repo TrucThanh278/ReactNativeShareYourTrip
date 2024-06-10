@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { View, ScrollView, ActivityIndicator } from "react-native";
 import { Searchbar } from "react-native-paper";
 import MyStyles from "../../styles/MyStyles";
