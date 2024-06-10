@@ -6,14 +6,15 @@ import {
 	Card,
 	Paragraph,
 	ActivityIndicator,
+	Checkbox,
 } from "react-native-paper";
 import Styles from "./Styles";
 import moment from "moment";
 import CommentLoader from "./CommentLoader";
-import CommentModal from "../comments/CommentModal";
 
 const Comments = ({ postId, comments, loading, setPage }) => {
-	const [commentsVisible, setCommentsVisible] = useState(false);
+	const [checked, setChecked] = useState(false);
+
 	const isCloseToBottom = ({
 		layoutMeasurement,
 		contentOffset,
@@ -80,6 +81,14 @@ const Comments = ({ postId, comments, loading, setPage }) => {
 									>
 										Phản hồi
 									</Text>
+									<Checkbox
+										status={
+											checked ? "checked" : "unchecked"
+										}
+										onPress={() => {
+											setChecked(!checked);
+										}}
+									/>
 								</Card.Content>
 							</Card>
 							{comment.replies.length > 0 && (

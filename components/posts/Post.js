@@ -9,6 +9,7 @@ const Post = ({ navigation }) => {
 	const [loading, setLoading] = useState(true);
 	const [posts, setPosts] = useState([]);
 	const [page, setPage] = useState(1);
+	const [q, setQ] = useState("");
 
 	const handlePost = async (postsData) => {
 		const postsWithImages = await Promise.all(
@@ -28,7 +29,8 @@ const Post = ({ navigation }) => {
 	const loadPost = async () => {
 		if (page > 0) {
 			try {
-				let url = `${endpoints["posts"]}?page=${page}`;
+				console.info("current page:", page);
+				let url = `${endpoints["posts"]}?page=${page}&q=${q}`;
 				const postsResponse = await APIs.get(url);
 				if (postsResponse.data.next === null) {
 					setPage(0);
@@ -64,18 +66,26 @@ const Post = ({ navigation }) => {
 
 	const loadMore = ({ nativeEvent }) => {
 		if (!loading && page > 0 && isCloseToBottom(nativeEvent)) {
-			setPage(page + 1);
+			setPage((prevPage) => prevPage + 1);
 		}
 	};
 
 	useEffect(() => {
 		loadPost();
-	}, [page]);
+	}, [page, q]);
+
+	const search = (value, callback) => {
+		setPage(1);
+		callback(value);
+	};
 
 	return (
 		<View style={[MyStyles.container, MyStyles.margin]}>
 			<View>
-				<Searchbar placeholder="Tìm chuyến đi..." />
+				<Searchbar
+					placeholder="Nhập từ khóa của chuyến đi..."
+					onChangeText={(t) => search(t, setQ)}
+				/>
 			</View>
 			<ScrollView onScroll={loadMore}>
 				{loading && posts.length === 0 ? (

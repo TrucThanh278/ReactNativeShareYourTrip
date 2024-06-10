@@ -37,64 +37,6 @@ const Profile = () => {
 			<View style={Styles.collections}>
 				<Text style={Styles.sectionTitle}>Personal Collections</Text>
 				<ScrollView horizontal style={{ height: 150 }}>
-					{/* <Card style={Styles.collectionItem}>
-						<Card.Cover
-							source={{
-								uri: "https://res.cloudinary.com/djyggobeq/image/upload/v1715852352/dzvud8wptqigfnbsoemr.jpg",
-							}}
-						/>
-						<Card.Content>
-							<Text>
-								Zu Fuß durch das westliche Sauerland – Ehmsenweg
-							</Text>
-						</Card.Content>
-					</Card>
-					<Card style={Styles.collectionItem}>
-						<Card.Cover
-							source={{
-								uri: "https://res.cloudinary.com/djyggobeq/image/upload/v1715852352/dzvud8wptqigfnbsoemr.jpg",
-							}}
-						/>
-						<Card.Content>
-							<Text>Mallorca – Wanderungen um Sóller</Text>
-						</Card.Content>
-					</Card> */}
-					{/* <Card style={Styles.collectionItem}>
-						<Card.Cover
-							source={{
-								uri: "https://res.cloudinary.com/djyggobeq/image/upload/v1715852352/dzvud8wptqigfnbsoemr.jpg",
-							}}
-						/>
-						<Card.Content>
-							<Text>Mallorca – Wanderungen um Sóller</Text>
-						</Card.Content>
-					</Card>
-					<Card style={Styles.collectionItem}>
-						<Card.Cover
-							source={{
-								uri: "https://res.cloudinary.com/djyggobeq/image/upload/v1715852352/dzvud8wptqigfnbsoemr.jpg",
-							}}
-						/>
-						<Card.Content>
-							<Text>Mallorca – Wanderungen um Sóller</Text>
-						</Card.Content>
-					</Card>
-					<Card style={Styles.collectionItem}>
-						<Card.Cover
-							source={{
-								uri: "https://res.cloudinary.com/djyggobeq/image/upload/v1715852352/dzvud8wptqigfnbsoemr.jpg",
-							}}
-						/>
-						<Card.Content>
-							<Text>Mallorca – Wanderungen um Sóller</Text>
-						</Card.Content>
-					</Card>
-					<Image
-						source={{
-							uri: "https://res.cloudinary.com/djyggobeq/image/upload/v1715852352/dzvud8wptqigfnbsoemr.jpg",
-						}}
-						style={{ width: 200, height: "100%" }}
-					/> */}
 					<View
 						style={{
 							height: "100%",

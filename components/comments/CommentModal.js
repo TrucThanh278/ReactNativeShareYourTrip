@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
 	View,
 	Text,
@@ -12,15 +12,17 @@ import {
 import Modal from "react-native-modal";
 import {
 	Avatar,
-	Card,
 	Paragraph,
 	ActivityIndicator,
 	IconButton,
+	Checkbox,
 } from "react-native-paper";
 import moment from "moment";
 import CommentLoader from "./CommentLoader";
+import { CheckBox } from "react-native-elements";
 
 const Comment = ({ comment }) => {
+	const [checked, setChecked] = useState(false);
 	const depth = comment.depth ?? 0; // Ensure depth is a valid number
 	return (
 		<View style={[styles.commentContainer, { marginLeft: depth * 20 }]}>
@@ -32,10 +34,20 @@ const Comment = ({ comment }) => {
 				<Text style={styles.commentDate}>
 					{moment(comment.created_date).fromNow()}
 				</Text>
-				<Paragraph>{comment.content}</Paragraph>
+				<View style={{ flexDirection: "row", alignItems: "center" }}>
+					<Paragraph>{comment.content}</Paragraph>
+					<Checkbox
+						status={checked ? "checked" : "unchecked"}
+						onPress={() => {
+							setChecked(!checked);
+						}}
+						style={{}}
+					/>
+				</View>
 				<TouchableOpacity onPress={() => alert("Reply")}>
 					<Text style={styles.replyButton}>Reply</Text>
 				</TouchableOpacity>
+
 				{comment.replies && comment.replies.length > 0 && (
 					<FlatList
 						data={comment.replies}
@@ -49,7 +61,7 @@ const Comment = ({ comment }) => {
 };
 
 const CommentModal = ({ isVisible, onClose, postId }) => {
-	const [commentText, setCommentText] = React.useState("");
+	const [commentText, setCommentText] = useState("");
 
 	const handleSendComment = () => {
 		if (commentText.trim()) {
@@ -99,7 +111,7 @@ const CommentModal = ({ isVisible, onClose, postId }) => {
 					<View style={styles.textInputWrapper}>
 						<TextInput
 							style={styles.input}
-							placeholder="Enter your comment..."
+							placeholder="Nhập bình luận..."
 							value={commentText}
 							onChangeText={setCommentText}
 						/>
