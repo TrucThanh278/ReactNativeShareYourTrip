@@ -1,12 +1,28 @@
 
+// const MyUserReducer = (currentState, action) => {
+//     switch (action.type) {
+//         case "login":
+//             return action.payload;
+//         case "logout":
+//             return null;
+//     }
+//     return currentState
+// }
+
+// export default MyUserReducer
+
 const MyUserReducer = (currentState, action) => {
     switch (action.type) {
         case "login":
-            return action.payload;
+            return {
+                ...currentState,
+                ...action.payload
+            };
         case "logout":
             return null;
+        default:
+            return currentState;
     }
-    return currentState
 }
 
-export default MyUserReducer
+export default MyUserReducer;

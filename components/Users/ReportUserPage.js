@@ -38,3 +38,4 @@ const ReportUserPage = ({ userId, token }) => {
 };
 
 export default ReportUserPage;
+

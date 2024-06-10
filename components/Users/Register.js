@@ -1,113 +1,9 @@
-// import React, { useState } from "react";
-// import { View, Text, TextInput, TouchableOpacity, Image } from "react-native";
-// import * as ImagePicker from 'expo-image-picker';
-// import MyStyles from "../../styles/MyStyles";
-// import Styles from "./Styles";
-
-// const Register = ({ navigation }) => {
-//     const [user, setUser] = useState({
-//         "first_name": "",
-//         "last_name": "",
-//         "username": "",
-//         "password": "",
-//         "avatar": ""
-//     });
-//     const [confirmPassword, setConfirmPassword] = useState("");
-//     const [error, setError] = useState("");
-//     const [loading, setLoading] = useState(false);
-
-//     const register = async () => {
-//         if (user.password !== confirmPassword) {
-//             setError("Passwords do not match.");
-//             return;
-//         }
-
-//         setLoading(true);
-
-//         let form = new FormData();
-//         for (let key in user) {
-//             if (key === 'avatar') {
-//                 form.append(key, {
-//                     uri: user[key].uri,
-//                     name: user[key].fileName,
-//                     type: user[key].uri.type
-//                 });
-//             } else {
-//                 form.append(key, user[key]);
-//             }
-//         }
-
-//         try {
-//             const response = await fetch("https://thanhduong.pythonanywhere.com/users/", {
-//                 method: "POST",
-//                 headers: {
-//                     "Content-Type": "multipart/form-data",
-//                 },
-//                 body: form,
-//             });
-//             if (!response.ok) {
-//                 throw new Error("Network response was not ok. Status: " + response.status);
-//             }
-//             const data = await response.json();
-//             console.log("Registration successful:", data);
-//             navigation.navigate("Login");
-//         } catch (error) {
-//             console.error("Error during registration:", error.message);
-//             setError("Registration failed. Please try again. Error: " + error.message);
-//         } finally {
-//             setLoading(false);
-//         }
-//     };
-
-//     const picker = async () => {
-//         let { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-//         if (status !== 'granted') {
-//             alert("Permission denied!");
-//         } else {
-//             let res = await ImagePicker.launchImageLibraryAsync();
-//             if (!res.cancelled) {
-//                 change('avatar', res.assets[0]);
-//             }
-//         }
-//     };
-
-//     const change = (field, value) => {
-//         setUser(current => {
-//             return { ...current, [field]: value };
-//         });
-//     };
-
-//     return (
-//         <View>
-//             <Image style={Styles.imgBackGround} source={require('./assets/images/user.jpeg')} />
-//             <View style={[Styles.view, MyStyles.absolute]}>
-//                 <Text style={Styles.title}>Register</Text>
-//                 <TextInput value={user.first_name} onChangeText={t => change("first_name", t)} placeholder="FirstName..." style={Styles.input} />
-//                 <TextInput value={user.last_name} onChangeText={t => change("last_name", t)} placeholder="LastName..." style={Styles.input} />
-//                 <TextInput value={user.username} onChangeText={t => change("username", t)} placeholder="Username..." style={Styles.input} />
-//                 <TextInput value={user.password} onChangeText={t => change("password", t)} secureTextEntry={true} placeholder="Password..." style={Styles.input} />
-//                 <TextInput value={confirmPassword} onChangeText={setConfirmPassword} secureTextEntry={true} placeholder="Confirm Password..." style={Styles.input} />
-//                 <TouchableOpacity onPress={picker}>
-//                     <Text style={Styles.input}>Choose avatar...</Text>
-//                 </TouchableOpacity>
-//                 {user.avatar ? <Image style={Styles.image} source={{ uri: user.avatar.uri }} /> : null}
-//                 <TouchableOpacity onPress={register} disabled={loading}>
-//                     <Text style={Styles.button}>{loading ? "Loading..." : "Register"}</Text>
-//                 </TouchableOpacity>
-//                 {error ? <Text style={Styles.error}>{error}</Text> : null}
-//             </View>
-//         </View>
-//     );
-// };
-
-// export default Register;
-
-import { useState } from "react";
+import React, { useState } from "react";
 import { View, Text, ScrollView, KeyboardAvoidingView, Platform, Alert, Image, ImageBackground } from "react-native";
 import { Button, HelperText, TextInput, TouchableRipple, RadioButton } from "react-native-paper";
 import MyStyles from "../../styles/MyStyles";
 import * as ImagePicker from 'expo-image-picker';
-import API, { endpoints } from "../../configs/APIs";
+import axios from 'axios';
 import { useNavigation } from "@react-navigation/native";
 
 const Register = () => {
@@ -121,7 +17,7 @@ const Register = () => {
         { label: "Confirm Password", icon: "eye", field: "confirm", secureTextEntry: true }
     ];
 
-    const [user, setUser] = useState({ gender: "male" });
+    const [user, setUser] = useState({ gender: "men" });
     const [err, setErr] = useState(false);
     const [loading, setLoading] = useState(false);
     const nav = useNavigation();
@@ -140,8 +36,9 @@ const Register = () => {
     };
 
     const register = async () => {
-        if (user.password !== user.confirm) setErr(true);
-        else {
+        if (user.password !== user.confirm) {
+            setErr(true);
+        } else {
             setErr(false);
             let form = new FormData();
             for (let k in user) {
@@ -150,27 +47,41 @@ const Register = () => {
                         form.append(k, {
                             uri: user.avatar.uri,
                             name: user.avatar.uri.split('/').pop(),
-                            type: user.avatar.type || 'image/jpeg'
+                            type: 'image/jpeg'
                         });
                     } else {
                         form.append(k, user[k]);
                     }
                 }
             }
-            console.log("Data to be sent:", form);
+
             setLoading(true);
+
             try {
-                let res = await API.post(endpoints['register'], form, {
-                    headers: { 'Content-Type': 'multipart/form-data' }
+                console.log('Registering user with form data:', form);
+                console.log('Endpoint:', 'http://172.16.12.10:8000/users/');
+                
+                const response = await axios.post('http://172.16.12.10:8000/users/', form, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
                 });
-                if (res.status === 201) {
+
+                if (response.status === 201) {
+                    console.log(response.data);
                     nav.navigate("Login");
                 } else {
-                    throw new Error("Registration failed. Please try again.");
+                    throw new Error(response.data.message || "Registration failed. Please try again.");
                 }
             } catch (ex) {
                 console.error('API Error: ', ex);
-                Alert.alert("Registration Error", ex.message);
+                console.log('Response from server:', ex.response);
+
+                if (ex.response && ex.response.data && ex.response.data.message) {
+                    Alert.alert("Registration Error", ex.response.data.message);
+                } else {
+                    Alert.alert("Registration Error", "Registration failed. Please try again.");
+                }
             } finally {
                 setLoading(false);
             }
@@ -198,14 +109,14 @@ const Register = () => {
                         <RadioButton.Group 
                             onValueChange={value => change(value, 'gender')} 
                             value={user.gender}
-                            color="white" // Màu chữ cho RadioButton
+                            color="white"
                         >
                             <View style={{ flexDirection: 'row', justifyContent: 'center'}}>
                                 <View style={[MyStyles.radioContainer, { marginRight: 50 }]}>
                                     <RadioButton 
                                         value="men" 
-                                        uncheckedColor="rgba(255, 255, 255, 0.5)" // Màu nền cho RadioButton khi không được chọn
-                                        color="white" // Màu chữ cho RadioButton khi được chọn
+                                        uncheckedColor="rgba(255, 255, 255, 0.5)" 
+                                        color="white" 
                                     />
                                     <Text style={{ color: 'white' }}>Men</Text>
                                 </View>

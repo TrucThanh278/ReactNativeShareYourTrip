@@ -13,7 +13,7 @@ export default StyleSheet.create({
     }, wrap: {
         flexWrap: "wrap"
     }, margin: {
-        margin: 5
+        margin: 1
     }, avatar: {
         width: 50,
         height: 50,
@@ -120,4 +120,10 @@ export default StyleSheet.create({
 			backdrop: "rgba(44, 50, 42, 0.4)",
 		},
     },
+	width70: {
+		width: "70%"
+	},
+	width30: {
+		width: "30%"
+	},
 });

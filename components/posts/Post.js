@@ -96,8 +96,9 @@ const Post = ({ navigation }) => {
 
 	return (
 		<View style={[MyStyles.container, MyStyles.margin]}>
-			<View>
-				<Searchbar placeholder="Tìm chuyến đi..." />
+			<View style={MyStyles.row}>
+				<Searchbar style={MyStyles.width70} placeholder="Tìm chuyến đi..." />
+				<Button style={MyStyles.width30} icon="plus-box-multiple"  onPress={() => navigation.navigate('CreatePost')} >Plan new</Button>
 			</View>
 			<ScrollView onScroll={loadMore}>
 				{posts === null ? (
@@ -118,3 +119,4 @@ const Post = ({ navigation }) => {
 };
 
 export default Post;
+

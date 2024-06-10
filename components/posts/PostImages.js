@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { TouchableOpacity, View, Image, Text } from "react-native";
+import {TouchableOpacity, View, Image, Text } from "react-native";
 import ImageViewing from "react-native-image-viewing";
 
 const PostImages = ({ images }) => {
