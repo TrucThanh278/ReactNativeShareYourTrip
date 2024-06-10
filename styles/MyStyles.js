@@ -28,6 +28,34 @@ export default StyleSheet.create({
 		borderRadius: 20,
 	},
 	border: {
+    container: {
+        flex: 1,
+        marginTop: 50
+    }, subject: {
+        fontSize: 25,
+        fontWeight: "bold",
+        color: "blue"
+    }, row: {
+        flexDirection: 'row'
+    }, wrap: {
+        flexWrap: "wrap"
+    }, margin: {
+        margin: 1
+    }, avatar: {
+        width: 50,
+        height: 50,
+        borderRadius: 20
+        
+    }, name: {
+        color: "green",
+		fontWeight: 500
+    }, absolute: {
+        position: "absolute",
+    },
+    flexEnd: {
+		justifyContent: "flex-end",
+	},
+    border: {
 		borderWidth: 0,
 		borderRadius: 0,
 	},
@@ -121,5 +149,11 @@ export default StyleSheet.create({
 	},
 	sendIcon: {
 		marginLeft: 10,
+    },
+	width70: {
+		width: "70%"
 	},
-});
+	width30: {
+		width: "30%"
+	}
+},});

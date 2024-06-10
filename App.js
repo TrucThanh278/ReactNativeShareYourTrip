@@ -1,16 +1,30 @@
+
+import React, { useReducer, useContext, useState } from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createStackNavigator } from '@react-navigation/stack';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import Login from './components/Users/Login';
+import Register from './components/Users/Register';
+import Profile from './components/Users/Profile';
+import UpdateProfile from './components/Users/UpdateProfile';
+import Logout from './components/Users/Logout';
+import MyUserReducer from './reducers/MyUserReducers';
+import { MyUserContext, MyDispatchContext } from './configs/Context';
+import Post from './components/posts/Post';
+import ProfileUser from './components/Users/ProfileUser'; 
+import ProfileNavigator from './components/Users/ProfileNavigator';
+import CreatePost from './components/posts/CreatePost'; 
+import AddImage from './components/posts/AddImage';
+import CreateHashtagPost from './components/posts/CreateHashtagPost';
+import RatingDetail from './components/Users/RatingDetail'
 import {
 	PaperProvider,
 	MD3LightTheme as DefaultTheme,
 } from "react-native-paper";
-import Post from "./components/posts/Post";
-import MyStyles from "./styles/MyStyles";
-import PostDetail from "./components/posts/PostDetail";
-import Comments from "./components/comments/Comments";
-import { NavigationContainer } from "@react-navigation/native";
-import { createStackNavigator } from "@react-navigation/stack";
-import Profile from "./components/users/Profile";
-import PostInfo from "./components/utils/PostInfo";
 
+const Tab = createBottomTabNavigator();
+const Stack = createStackNavigator();
 const theme = {
 	...DefaultTheme,
 	myOwnProperty: true,
@@ -19,26 +33,103 @@ const theme = {
 	},
 };
 
-const Stack = createStackNavigator();
-
-const MyStack = () => {
-	return (
-		<Stack.Navigator screenOptions={{ headerShown: true }}>
-			<Stack.Screen name="Home" component={Post} />
-			<Stack.Screen name="Comments" component={Comments} />
-			<Stack.Screen name="Profile" component={Profile} />
-			<Stack.Screen name="PostDetail" component={PostDetail} />
-			<Stack.Screen name="PostInfo" component={PostInfo} />
-		</Stack.Navigator>
-	);
+const ProfileStack = () => {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name="Profile" component={Profile} options={{ title: 'My Profile' }} />
+      <Stack.Screen name="UpdateProfile" component={UpdateProfile} options={{ title: 'Update Profile' }} />
+    </Stack.Navigator>
+  );
 };
 
-export default function App() {
-	return (
-		<PaperProvider theme={theme}>
-			<NavigationContainer>
-				<MyStack />
-			</NavigationContainer>
-		</PaperProvider>
-	);
-}
+const HomeStack = () => {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name="Home" component={Post} options={{ title: 'Home' }} />
+      <Stack.Screen name="ProfileNavigator" component={ProfileNavigator} options={{ title: 'Profile' }} />
+      <Stack.Screen name="CreatePost" component={CreatePost} options={{ title: 'Create Post' }} />
+      <Stack.Screen name="AddImage" component={AddImage} options={{ title: 'Image Post' }} />
+      <Stack.Screen name="CreateHashtagPost" component={CreateHashtagPostScreen} options={{ title: 'Create Hashtag Post' }} />
+      <Stack.Screen name="RatingDetail" component={RatingDetail} />
+    </Stack.Navigator>
+  );
+};
+
+const CreateHashtagPostScreen = () => {
+  return (
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <CreateHashtagPost />
+    </View>
+  );
+};
+
+const MyTab = () => {
+  const user = useContext(MyUserContext);
+
+  return (
+    <Tab.Navigator>
+      <Tab.Screen 
+        name="HomeStack" 
+        component={HomeStack} 
+        options={{
+          title: 'Home', 
+          tabBarIcon: ({ color, size }) => <MaterialCommunityIcons name="home" color={color} size={size} />
+        }} 
+      />
+      {user ? (
+        <>
+          <Tab.Screen 
+            name="ProfileStack" 
+            component={ProfileStack} 
+            options={{
+              title: user.username, 
+              tabBarIcon: ({ color, size }) => <MaterialCommunityIcons name="account" color={color} size={size} />
+            }} 
+          />
+          <Tab.Screen 
+            name="Logout" 
+            component={Logout} 
+            options={{
+              tabBarButton: () => null 
+            }} 
+          />
+        </>
+      ) : (
+        <>
+          <Tab.Screen 
+            name="Register" 
+            component={Register} 
+            options={{
+              title: 'REGISTER', 
+              tabBarIcon: ({ color, size }) => <MaterialCommunityIcons name="account" color={color} size={size} />
+            }} 
+          />
+          <Tab.Screen 
+            name="Login" 
+            component={Login} 
+            options={{
+              title: 'LOGIN', 
+              tabBarIcon: ({ color, size }) => <MaterialCommunityIcons name="login" color={color} size={size} />
+            }} 
+          />
+        </>
+      )}
+    </Tab.Navigator>
+  );
+};
+
+const App = () => {
+  const [user, dispatch] = useReducer(MyUserReducer, null);
+
+  return (
+    <NavigationContainer theme={theme}>
+      <MyUserContext.Provider value={user}>
+        <MyDispatchContext.Provider value={dispatch}>
+          <MyTab />
+        </MyDispatchContext.Provider>
+      </MyUserContext.Provider>
+    </NavigationContainer>
+  );
+};
+
+export default App;
