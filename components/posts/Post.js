@@ -1,32 +1,15 @@
-import { useEffect, useState } from "react";
-import {
-	ActivityIndicator,
-	View,
-	ScrollView,
-	TouchableHighlight,
-	TextInput,
-} from "react-native";
+import React, { useEffect, useState } from "react";
+import { View, ScrollView, ActivityIndicator } from "react-native";
+import { Searchbar } from "react-native-paper";
 import MyStyles from "../../styles/MyStyles";
-import Hashtag from "../hashtags/Hashtag";
-import {
-	Searchbar,
-	Avatar,
-	Button,
-	Card,
-	Title,
-	Paragraph,
-} from "react-native-paper";
-import Styles from "./Styles";
-import PostImages from "./PostImages";
-import CommentsBottomSheet from "../comments/CommentsBottomSheet";
 import APIs, { endpoints } from "../../configs/APIs";
-import PostInfo from "../utils/PostInfo";
+import PostInfo from "../utils/PostInfo"; // Import the PostInfo component
 
 const Post = ({ navigation }) => {
 	const [loading, setLoading] = useState(true);
-	const [posts, setPosts] = useState(null);
+	const [posts, setPosts] = useState([]);
 	const [page, setPage] = useState(1);
-
+	const [q, setQ] = useState("");
 
 	const handlePost = async (postsData) => {
 		const postsWithImages = await Promise.all(
@@ -46,23 +29,20 @@ const Post = ({ navigation }) => {
 	const loadPost = async () => {
 		if (page > 0) {
 			try {
-				let url = `${endpoints["posts"]}?page=${page}`;
+				console.info("current page:", page);
+				let url = `${endpoints["posts"]}?page=${page}&q=${q}`;
 				const postsResponse = await APIs.get(url);
 				if (postsResponse.data.next === null) {
 					setPage(0);
 				}
 				if (page === 1) {
-					const postsWithImages = await handlePost(
-						postsResponse.data
-					);
+					const postsData = postsResponse.data;
+					const postsWithImages = await handlePost(postsData);
 					setPosts(postsWithImages);
 				} else {
-					const postsWithImages = await handlePost(
-						postsResponse.data
-					);
-					setPosts((current) => {
-						return [...current, ...postsWithImages];
-					});
+					const postsData = postsResponse.data;
+					const postsWithImages = await handlePost(postsData);
+					setPosts((current) => [...current, ...postsWithImages]);
 				}
 			} catch (error) {
 				console.error("There was an error fetching the posts", error);
@@ -86,30 +66,37 @@ const Post = ({ navigation }) => {
 
 	const loadMore = ({ nativeEvent }) => {
 		if (!loading && page > 0 && isCloseToBottom(nativeEvent)) {
-			setPage(page + 1);
+			setPage((prevPage) => prevPage + 1);
 		}
 	};
 
 	useEffect(() => {
 		loadPost();
-	}, [page]);
+	}, [page, q]);
+
+	const search = (value, callback) => {
+		setPage(1);
+		callback(value);
+	};
 
 	return (
 		<View style={[MyStyles.container, MyStyles.margin]}>
-			<View style={MyStyles.row}>
-				<Searchbar style={MyStyles.width70} placeholder="Tìm chuyến đi..." />
-				<Button style={MyStyles.width30} icon="plus-box-multiple"  onPress={() => navigation.navigate('CreatePost')} >Plan new</Button>
+			<View>
+				<Searchbar
+					placeholder="Nhập từ khóa của chuyến đi..."
+					onChangeText={(t) => search(t, setQ)}
+				/>
 			</View>
 			<ScrollView onScroll={loadMore}>
-				{posts === null ? (
+				{loading && posts.length === 0 ? (
 					<ActivityIndicator style={{ margin: 10 }} />
 				) : (
 					posts.map((post) => (
 						<PostInfo
+							key={post.id}
 							post={post}
 							loading={loading}
 							navigation={navigation}
-							key={post.id}
 						/>
 					))
 				)}
@@ -119,4 +106,3 @@ const Post = ({ navigation }) => {
 };
 
 export default Post;
-

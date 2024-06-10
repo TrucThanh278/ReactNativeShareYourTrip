@@ -1,3 +1,4 @@
+
 import React, { useReducer, useContext, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -17,9 +18,21 @@ import CreatePost from './components/posts/CreatePost';
 import AddImage from './components/posts/AddImage';
 import CreateHashtagPost from './components/posts/CreateHashtagPost';
 import RatingDetail from './components/Users/RatingDetail'
+import {
+	PaperProvider,
+	MD3LightTheme as DefaultTheme,
+} from "react-native-paper";
+import MyStyles from "./styles/MyStyles"; 
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
+const theme = {
+	...DefaultTheme,
+	myOwnProperty: true,
+	colors: {
+		...MyStyles.lightTheme.colors,
+	},
+};
 
 const ProfileStack = () => {
   return (
@@ -110,7 +123,7 @@ const App = () => {
   const [user, dispatch] = useReducer(MyUserReducer, null);
 
   return (
-    <NavigationContainer>
+    <NavigationContainer theme={theme}>
       <MyUserContext.Provider value={user}>
         <MyDispatchContext.Provider value={dispatch}>
           <MyTab />
@@ -121,4 +134,3 @@ const App = () => {
 };
 
 export default App;
-

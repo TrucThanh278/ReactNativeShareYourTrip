@@ -1,211 +1,5 @@
-
-// import React from 'react';
-// import { TouchableHighlight, View } from "react-native";
-// import {
-//     ActivityIndicator,
-//     Avatar,
-//     Button,
-//     Card,
-//     Paragraph,
-//     TextInput,
-//     Title,
-// } from "react-native-paper";
-// import MyStyles from "../../styles/MyStyles";
-// import Hashtag from "../hashtags/Hashtag";
-// import PostImages from "../posts/PostImages";
-// import { useNavigation } from '@react-navigation/native';
-
-// const PostInfo = ({ post, loading }) => {
-//     const navigation = useNavigation();
-
-
-
-//     return (
-//         <Card style={[MyStyles.margin, MyStyles.border]}>
-//             <TouchableHighlight
-//                 activeOpacity={0.5}
-//                 underlayColor="#DDDDDD"
-//                 onPress={() => navigation.navigate('ProfileNavigator', { userId: post.user.id })}
-//             >
-//                 <Card.Title
-//                     title={`${post.user.first_name} ${post.user.last_name}`}
-//                     subtitle={post.user.following}
-//                     left={(props) => (
-//                         <Avatar.Image
-//                             {...props}
-//                             size={50}
-//                             source={{
-//                                 uri: post.user.avatar,
-//                             }}
-//                         />
-//                     )}
-//                 />
-//             </TouchableHighlight>
-
-//             <Card.Content style={{ margin: 0 }}>
-//                 <Title>{post.title}</Title>
-//                 <Paragraph>
-//                     {post.starting_point} to {post.end_point}
-//                 </Paragraph>
-                
-//                 {<Hashtag hashtags={post.hashtags} />}
-//             </Card.Content>
-//             {loading && <ActivityIndicator />}
-//             {<PostImages images={post.images} />}
-//             <Card.Actions>
-//                 <View style={{ flex: 1 }}>
-//                     <TextInput
-//                         style={{
-//                             borderRadius: 10,
-//                             width: "100%",
-//                             backgroundColor: "#fff",
-//                         }}
-//                         placeholder={"Nhập comment..."}
-//                         mode="outlined"
-//                         label={"Comment"}
-//                     />
-//                 </View>
-//                 {post.active ? (
-//                     <></>
-//                 ) : (
-//                     <Button
-//                         icon={"send-circle"}
-//                         onPress={() =>
-//                             navigation.navigate("PostDetail", {
-//                                 postId: post.id,
-//                             })
-//                         }
-//                     >
-//                         Chi tiết
-//                     </Button>
-//                 )}
-//             </Card.Actions>
-//         </Card>
-//     );
-// };
-
-// export default PostInfo;
-
-
-// import React, { useState, useEffect } from 'react';
-// import { Alert, TouchableHighlight, View } from "react-native";
-// import {
-//     ActivityIndicator,
-//     Avatar,
-//     Button,
-//     Card,
-//     Paragraph,
-//     TextInput,
-//     Title,
-// } from "react-native-paper";
-// import MyStyles from "../../styles/MyStyles";
-// import Hashtag from "../hashtags/Hashtag";
-// import PostImages from "../posts/PostImages";
-// import { useNavigation } from '@react-navigation/native';
-
-// const PostInfo = ({ post, loading }) => {
-//     const navigation = useNavigation();
-//     const [averageRating, setAverageRating] = useState(null);
-
-//     const fetchAverageRating = async (postId) => {
-//         try {
-//             const response = await fetch(`http://192.168.1.50:8000/posts/${postId}/average_rating/`);
-//             if (!response.ok) {
-//                 throw new Error('Network response was not ok');
-//             }
-//             const data = await response.json();
-//             setAverageRating(data.average_rating);
-//         } catch (error) {
-//             console.error("Error fetching average rating:", error);
-//             Alert.alert("Error", `Failed to fetch average rating: ${error.message}`);
-//         }
-//     };
-
-//     useEffect(() => {
-//         fetchAverageRating(post.id);
-//     }, [post.id]);
-
-//     return (
-//         <Card style={[MyStyles.margin, MyStyles.border]}>
-//             <TouchableHighlight
-//                 activeOpacity={0.5}
-//                 underlayColor="#DDDDDD"
-//                 onPress={() => navigation.navigate('ProfileNavigator', { userId: post.user.id })}
-//             >
-//                 <Card.Title
-//                     title={`${post.user.first_name} ${post.user.last_name}`}
-//                     subtitle={post.user.following}
-//                     left={(props) => (
-//                         <Avatar.Image
-//                             {...props}
-//                             size={50}
-//                             source={{
-//                                 uri: post.user.avatar,
-//                             }}
-//                         />
-//                     )}
-//                 />
-//             </TouchableHighlight>
-
-//             <Card.Content style={{ margin: 0 }}>
-//                 <Title>{post.title}</Title>
-//                 <Paragraph>
-//                     {post.starting_point} to {post.end_point}
-//                 </Paragraph>
-                
-//                 {<Hashtag hashtags={post.hashtags} />}
-//                 {averageRating !== null && (
-//                     <Paragraph>Average Rating: {averageRating.toFixed(2)}</Paragraph>
-//                 )}
-//             </Card.Content>
-//             {loading && <ActivityIndicator />}
-//             {<PostImages images={post.images} />}
-//             <Card.Actions>
-//                 <View style={{ flex: 1 }}>
-//                     <TextInput
-//                         style={{
-//                             borderRadius: 10,
-//                             width: "100%",
-//                             backgroundColor: "#fff",
-//                         }}
-//                         placeholder={"Nhập comment..."}
-//                         mode="outlined"
-//                         label={"Comment"}
-//                     />
-//                 </View>
-//                 {post.active ? (
-//                     <></>
-//                 ) : (
-//                     <Button
-//                         icon={"send-circle"}
-//                         onPress={() =>
-//                             navigation.navigate("PostDetail", {
-//                                 postId: post.id,
-//                             })
-//                         }
-//                     >
-//                         Chi tiết
-//                     </Button>
-//                 )}
-//                 <Button
-//                     icon={"star"}
-//                     onPress={() =>
-//                         navigation.navigate("RatingDetail", {
-//                             postId: post.id,
-//                         })
-//                     }
-//                 >
-//                     Xem đánh giá
-//                 </Button>
-//             </Card.Actions>
-//         </Card>
-//     );
-// };
-
-// export default PostInfo;
-
 import React, { useState, useEffect } from 'react';
-import { Alert, TouchableHighlight, View } from "react-native";
+import { Alert, TouchableHighlight, View, Modal } from "react-native";
 import {
     ActivityIndicator,
     Avatar,
@@ -214,16 +8,23 @@ import {
     Paragraph,
     TextInput,
     Title,
+    IconButton,
 } from "react-native-paper";
 import Icon from 'react-native-vector-icons/FontAwesome'; // Import icon set
 import MyStyles from "../../styles/MyStyles";
 import Hashtag from "../hashtags/Hashtag";
 import PostImages from "../posts/PostImages";
+import CommentModal from "../comments/CommentModal";
 import { useNavigation } from '@react-navigation/native'; 
 
+//const PostInfo = ({ post, loading, navigation }) => {
 const PostInfo = ({ post, loading }) => {
     const navigation = useNavigation();
     const [averageRating, setAverageRating] = useState(null);
+    const [isModalVisible, setModalVisible] = useState(false);
+    const toggleModal = () => {
+		setModalVisible(!isModalVisible);
+	};
 
     const fetchAverageRating = async (postId) => {
         try {
@@ -261,6 +62,64 @@ const PostInfo = ({ post, loading }) => {
         return stars;
     };
 
+    // return (
+	// 	<Card style={[MyStyles.margin, MyStyles.border]}>
+	// 		{loading && <ActivityIndicator />}
+	// 		<PostImages images={post.images} />
+	// 		<Card.Actions>
+	// 			<View
+	// 				style={{
+	// 					flex: 1,
+	// 					flexDirection: "row",
+	// 					alignItems: "center",
+	// 				}}
+	// 			>
+	// 				<TextInput
+	// 					style={{
+	// 						borderRadius: 10,
+	// 						backgroundColor: "#fff",
+	// 						flex: 1,
+	// 					}}
+	// 					placeholder="Nhập comment..."
+	// 					mode="outlined"
+	// 					label="Comment"
+	// 					onFocus={toggleModal} // Show modal when TextInput is focused
+	// 				/>
+	// 				<IconButton
+	// 					icon="send"
+	// 					size={24}
+	// 					onPress={() => alert("Hello")}
+	// 					style={MyStyles.sendIcon}
+	// 				/>
+	// 			</View>
+	// 			{post.active ? (
+	// 				<></>
+	// 			) : (
+	// 				<Button
+	// 					onPress={() =>
+	// 						navigation.navigate("PostDetail", {
+	// 							postId: post.id,
+	// 						})
+	// 					}
+	// 				>
+	// 					Chi tiết
+	// 				</Button>
+	// 			)}
+	// 		</Card.Actions>
+
+	// 		{post.active ? (
+	// 			<></>
+	// 		) : (
+	// 			<CommentModal
+	// 				isVisible={isModalVisible}
+	// 				postId={post.id}
+	// 				onClose={toggleModal}
+	// 			/>
+	// 		)}
+	// 	</Card>
+	// );
+
+
     return (
         <Card style={[MyStyles.margin, MyStyles.border]}>
             <TouchableHighlight
@@ -270,7 +129,7 @@ const PostInfo = ({ post, loading }) => {
             >
                 <Card.Title
                     title={`${post.user.first_name} ${post.user.last_name}`}
-                    subtitle={`${post.user.followers} followers`}
+                    subtitle={post.user.following}
                     left={(props) => (
                         <Avatar.Image
                             {...props}
@@ -300,17 +159,28 @@ const PostInfo = ({ post, loading }) => {
             {loading && <ActivityIndicator />}
             {<PostImages images={post.images} />}
             <Card.Actions>
-                <View style={{ flex: 1 }}>
-                    <TextInput
-                        style={{
-                            borderRadius: 10,
-                            width: "100%",
-                            backgroundColor: "#fff",
-                        }}
-                        placeholder={"Nhập comment..."}
-                        mode="outlined"
-                        label={"Comment"}
-                    />
+                <View style={{
+						flex: 1,
+						flexDirection: "row",
+						alignItems: "center",
+					}}>
+                <TextInput
+						style={{
+							borderRadius: 10,
+							backgroundColor: "#fff",
+							flex: 1,
+						}}
+						placeholder="Nhập comment..."
+						mode="outlined"
+						label="Comment"
+						onFocus={toggleModal} // Show modal when TextInput is focused
+					/>
+                    <IconButton
+						icon="send"
+						size={24}
+						onPress={() => alert("Hello")}
+						style={MyStyles.sendIcon}
+					/>
                 </View>
                 {post.active ? (
                     <></>
@@ -337,9 +207,17 @@ const PostInfo = ({ post, loading }) => {
                     Rating
                 </Button>
             </Card.Actions>
+            {post.active ? (
+				<></>
+			) : (
+				<CommentModal
+					isVisible={isModalVisible}
+					postId={post.id}
+					onClose={toggleModal}
+				/>
+			)}
         </Card>
     );
 };
 
 export default PostInfo;
-
