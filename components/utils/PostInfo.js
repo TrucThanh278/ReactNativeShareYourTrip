@@ -270,7 +270,7 @@ const PostInfo = ({ post, loading }) => {
             >
                 <Card.Title
                     title={`${post.user.first_name} ${post.user.last_name}`}
-                    subtitle={post.user.following}
+                    subtitle={`${post.user.followers} followers`}
                     left={(props) => (
                         <Avatar.Image
                             {...props}
@@ -342,3 +342,4 @@ const PostInfo = ({ post, loading }) => {
 };
 
 export default PostInfo;
+
