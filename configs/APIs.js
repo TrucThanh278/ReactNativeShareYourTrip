@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "http://192.168.1.5:8000";
+const BASE_URL = "http://192.168.1.14:8000";
 
 export const endpoints = {
 	register: "/users/",
@@ -16,7 +16,7 @@ export const endpoints = {
 	hashtags: "/hashtags/",
 	posts: "/posts/",
 	postsDetails: (postId) => `/posts/${postId}`,
-	comments: (postId) => `/posts/${postId}/comments`,
+	comments: (postId) => `/posts/${postId}/comments/`,
 };
 
 export const authApi = (token) => {

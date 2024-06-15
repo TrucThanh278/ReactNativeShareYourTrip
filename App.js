@@ -22,6 +22,7 @@ import {
 	MD3LightTheme as DefaultTheme,
 } from "react-native-paper";
 import MyStyles from "./styles/MyStyles";
+import PostDetail from "./components/posts/PostDetail";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -119,6 +120,7 @@ const HomeStack = () => {
 				options={{ title: "Create Hashtag Post" }}
 			/>
 			<Stack.Screen name="RatingDetail" component={RatingDetail} />
+			<Stack.Screen name="PostDetail" component={PostDetail} />
 		</Stack.Navigator>
 	);
 };

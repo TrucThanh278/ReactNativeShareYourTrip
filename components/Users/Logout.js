@@ -1,7 +1,6 @@
 import { useContext } from "react"
 import { Button } from "react-native"
 import Context from "../../configs/Context"
-import Styles from "./Styles"
 
 const Logout = (navigation) => {
     const [user, dispatch] = useContext(Context)
