@@ -20,7 +20,7 @@ export const endpoints = {
 	hashtags: "/hashtags/",
 	posts: "/posts/",
 	postsDetails: (postId) => `/posts/${postId}`,
-	comments: (postId) => `/posts/${postId}/comments`,
+	comments: (postId) => `/posts/${postId}/comments/`,
 };
 
 export const authApi = (token) => {

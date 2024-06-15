@@ -1,9 +1,24 @@
 import React, { useState } from "react";
-import { View, Text, ScrollView, KeyboardAvoidingView, Platform, Alert, Image, ImageBackground } from "react-native";
-import { Button, HelperText, TextInput, TouchableRipple, RadioButton } from "react-native-paper";
+import {
+	View,
+	Text,
+	ScrollView,
+	KeyboardAvoidingView,
+	Platform,
+	Alert,
+	Image,
+	ImageBackground,
+} from "react-native";
+import {
+	Button,
+	HelperText,
+	TextInput,
+	TouchableRipple,
+	RadioButton,
+} from "react-native-paper";
 import MyStyles from "../../styles/MyStyles";
-import * as ImagePicker from 'expo-image-picker';
-import axios from 'axios';
+import * as ImagePicker from "expo-image-picker";
+import axios from "axios";
 import { useNavigation } from "@react-navigation/native";
 import Styles from "./Styles";
 

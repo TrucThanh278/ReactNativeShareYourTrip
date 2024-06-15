@@ -3,7 +3,7 @@ import { View, ScrollView, ActivityIndicator } from "react-native";
 import { Searchbar, Button } from "react-native-paper";
 import MyStyles from "../../styles/MyStyles";
 import APIs, { endpoints } from "../../configs/APIs";
-import PostInfo from "../utils/PostInfo"; // Import the PostInfo component
+import PostInfo from "../utils/PostInfo";
 
 const Post = ({ navigation }) => {
 	const [loading, setLoading] = useState(true);

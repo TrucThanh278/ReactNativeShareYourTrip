@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
 	View,
 	Text,
@@ -8,6 +8,7 @@ import {
 	TouchableOpacity,
 	KeyboardAvoidingView,
 	Platform,
+	Alert,
 } from "react-native";
 import Modal from "react-native-modal";
 import {
@@ -15,16 +16,78 @@ import {
 	Paragraph,
 	ActivityIndicator,
 	IconButton,
-	Checkbox,
 } from "react-native-paper";
 import moment from "moment";
-import CommentLoader from "./CommentLoader";
-import { CheckBox } from "react-native-elements";
+import APIs, { endpoints } from "../../configs/APIs";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const Comment = ({ comment }) => {
-	const [checked, setChecked] = useState(false);
-	const depth = comment.depth ?? 0; // Ensure depth is a valid number
-	return (
+const CommentModal = ({ isVisible, onClose, postId }) => {
+	const [comments, setComments] = useState([]);
+	const [loading, setLoading] = useState(true);
+	const [page, setPage] = useState(1);
+	const [hasNextPage, setHasNextPage] = useState(true);
+	const [commentText, setCommentText] = useState("");
+
+	const loadComments = async (postId, page) => {
+		if (page > 0 && hasNextPage) {
+			try {
+				let url = `${endpoints.comments(postId)}?page=${page}`;
+				const res = await APIs.get(url);
+				if (res.data.results) {
+					setComments((prevComments) => [
+						...prevComments,
+						...res.data.results,
+					]);
+					setHasNextPage(res.data.next !== null);
+				}
+				setLoading(false);
+			} catch (err) {
+				console.log(err);
+			}
+		}
+	};
+
+	useEffect(() => {
+		loadComments(postId, page);
+	}, [page]);
+
+	const handleCommentReply = async () => {
+		try {
+			const token = await AsyncStorage.getItem("token");
+			if (!token) {
+				Alert.alert(
+					"Chưa đăng nhập",
+					"Vui lòng đăng nhập để bình luận"
+				);
+				return;
+			}
+			if (commentText.trim()) {
+				const response = await APIs.post(
+					endpoints["comments"](postId),
+					{
+						content: commentText,
+					},
+					{
+						headers: {
+							Authorization: `Bearer ${token}`,
+							"Content-Type": "application/json",
+						},
+					}
+				);
+				if (response.status === 201 || response.status === 200) {
+					setCommentText("");
+					setComments((prevComments) => [
+						response.data,
+						...prevComments,
+					]);
+				}
+			}
+		} catch (err) {
+			console.log("Lỗi không lấy được token!!!", err);
+		}
+	};
+
+	const CommentItem = ({ comment, depth = 0, parentId = null }) => (
 		<View style={[styles.commentContainer, { marginLeft: depth * 20 }]}>
 			<Avatar.Image source={{ uri: comment.user.avatar }} size={36} />
 			<View style={styles.commentContent}>
@@ -36,40 +99,26 @@ const Comment = ({ comment }) => {
 				</Text>
 				<View style={{ flexDirection: "row", alignItems: "center" }}>
 					<Paragraph>{comment.content}</Paragraph>
-					<Checkbox
-						status={checked ? "checked" : "unchecked"}
-						onPress={() => {
-							setChecked(!checked);
-						}}
-						style={{}}
-					/>
 				</View>
 				<TouchableOpacity onPress={() => alert("Reply")}>
 					<Text style={styles.replyButton}>Reply</Text>
 				</TouchableOpacity>
-
 				{comment.replies && comment.replies.length > 0 && (
 					<FlatList
 						data={comment.replies}
-						renderItem={({ item }) => <Comment comment={item} />}
-						keyExtractor={(item) => item.id.toString()}
+						renderItem={({ item }) => (
+							<CommentItem
+								comment={item}
+								depth={depth + 1}
+								parentId={comment.id}
+							/>
+						)}
+						keyExtractor={(item) => `reply-${parentId}-${item.id}`}
 					/>
 				)}
 			</View>
 		</View>
 	);
-};
-
-const CommentModal = ({ isVisible, onClose, postId }) => {
-	const [commentText, setCommentText] = useState("");
-
-	const handleSendComment = () => {
-		if (commentText.trim()) {
-			// Thực hiện hành động gửi bình luận ở đây
-			alert(`Comment sent: ${commentText}`);
-			setCommentText(""); // Reset text input
-		}
-	};
 
 	return (
 		<Modal
@@ -81,28 +130,23 @@ const CommentModal = ({ isVisible, onClose, postId }) => {
 		>
 			<View style={styles.modalContent}>
 				<View style={styles.handle} />
-				<CommentLoader postId={postId}>
-					{({ comments, loading, setPage, hasNextPage }) => (
-						<>
-							{loading && comments.length === 0 ? (
-								<ActivityIndicator />
-							) : (
-								<FlatList
-									data={comments}
-									renderItem={({ item }) => (
-										<Comment comment={item} />
-									)}
-									keyExtractor={(item) => item.id.toString()}
-									onEndReached={() =>
-										hasNextPage &&
-										setPage((prevPage) => prevPage + 1)
-									}
-									onEndReachedThreshold={0.1}
-								/>
-							)}
-						</>
-					)}
-				</CommentLoader>
+				{loading && comments.length === 0 ? (
+					<ActivityIndicator />
+				) : (
+					<FlatList
+						data={comments}
+						renderItem={({ item }) => (
+							<CommentItem comment={item} />
+						)}
+						keyExtractor={(item, index) =>
+							`comment-${item.id}-${index}`
+						} // Sửa keyExtractor
+						onEndReached={() =>
+							hasNextPage && setPage((prevPage) => prevPage + 1)
+						}
+						onEndReachedThreshold={0.1}
+					/>
+				)}
 				<KeyboardAvoidingView
 					behavior={Platform.OS === "ios" ? "padding" : "height"}
 					keyboardVerticalOffset={80}
@@ -118,7 +162,7 @@ const CommentModal = ({ isVisible, onClose, postId }) => {
 						<IconButton
 							icon="send"
 							size={24}
-							onPress={handleSendComment}
+							onPress={handleCommentReply}
 							style={styles.sendIcon}
 						/>
 					</View>

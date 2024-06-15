@@ -21,6 +21,7 @@ import AdminHome from "./components/admin/AdminHome";
 import ManageReports from "./components/admin/ManageReports";
 import { Provider as PaperProvider, DefaultTheme as DefaultPaperTheme } from "react-native-paper";
 
+
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 

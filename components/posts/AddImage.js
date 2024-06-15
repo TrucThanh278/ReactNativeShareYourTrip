@@ -1,33 +1,37 @@
-import React, { useState } from 'react';
-import { Text, View, Button, Image, Alert, StyleSheet } from 'react-native';
-import * as ImagePicker from 'expo-image-picker';
+import React, { useState } from "react";
+import { Text, View, Button, Image, Alert, StyleSheet } from "react-native";
+import * as ImagePicker from "expo-image-picker";
 
 const AddImage = ({ navigation, route }) => {
-  const { postId, token } = route.params;
-  console.log('Image token', token, postId);
+	const { postId, token } = route.params;
+	console.log("Image token", token, postId);
 
-  const [imageUri, setImageUri] = useState(null);
+	const [imageUri, setImageUri] = useState(null);
 
-  const pickImage = async () => {
-    try {
-      let result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.All,
-        allowsEditing: true,
-        aspect: [4, 3],
-        quality: 1,
-      });
+	const pickImage = async () => {
+		try {
+			let result = await ImagePicker.launchImageLibraryAsync({
+				mediaTypes: ImagePicker.MediaTypeOptions.All,
+				allowsEditing: true,
+				aspect: [4, 3],
+				quality: 1,
+			});
 
-      console.log('Result of image picker:', result);
+			console.log("Result of image picker:", result);
 
-      if (!result.cancelled && result.assets && result.assets.length > 0) {
-        const uri = result.assets[0].uri;
-        console.log('Selected Image URI:', uri);
-        setImageUri(uri);
-      }
-    } catch (error) {
-      console.log('Error picking image:', error);
-    }
-  };
+			if (
+				!result.cancelled &&
+				result.assets &&
+				result.assets.length > 0
+			) {
+				const uri = result.assets[0].uri;
+				console.log("Selected Image URI:", uri);
+				setImageUri(uri);
+			}
+		} catch (error) {
+			console.log("Error picking image:", error);
+		}
+	};
 
   const handleUploadImage = async () => {
     try {
@@ -36,16 +40,15 @@ const AddImage = ({ navigation, route }) => {
         return;
       }
 
-      const formData = new FormData();
-      formData.append('image', {
-        uri: imageUri,
-        name: 'image.jpg',
-        type: 'image/jpeg',
-      });
-      formData.append('post', postId);
+			const formData = new FormData();
+			formData.append("image", {
+				uri: imageUri,
+				name: "image.jpg",
+				type: "image/jpeg",
+			});
+			formData.append("post", postId);
 
-      console.log('FormData:', formData);
-
+			console.log("FormData:", formData);
       const response = await fetch('http://192.168.1.30:8000/images/', {
         method: 'POST',
         headers: {
