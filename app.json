@@ -1,11 +1,10 @@
 {
-  "expo": {
-    "name": "ShareYourTripApp",
-    "slug": "ShareYourTripApp",
-    "version": "1.0.0",
-    "assetBundlePatterns": [
-      "**/*"
-    ]
-  },
-  "name": "ShareYourTripApp"
+	"expo": {
+		"name": "ShareYourTripApp",
+		"slug": "ShareYourTripApp",
+		"version": "1.0.0",
+		"assetBundlePatterns": ["**/*"]
+	},
+
+	"name": "ShareYourTripApp"
 }

@@ -1,10 +1,4 @@
-import { useEffect, useState } from "react";
-import {
-	ActivityIndicator,
-	TouchableHighlight,
-	View,
-	Text,
-} from "react-native";
+import React, { ActivityIndicator, View } from "react-native";
 import { Chip } from "react-native-paper";
 import MyStyles from "../../styles/MyStyles";
 

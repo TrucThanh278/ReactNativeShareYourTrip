@@ -27,17 +27,55 @@ export default StyleSheet.create({
 		height: 80,
 		borderRadius: 20,
 	},
-	// mainColor: {
-	// 	color: "#33582f",
-	// },
-	// backgroundColor: {
-	// 	backgroundColor: "#33582f",
-	// },
-	// borderColor: {
-	// 	borderColor: "#33582f",
-	// 	color: "#33582f",
-	// },
+	rowHeader: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		justifyContent: 'space-between',
+	},
+	searchBar: {
+		flex: 11, 
+		marginRight: 8,
+	},
+	buttonPlan: {
+		flex: 1,
+		justifyContent: "center"
+	},
+	nameUser:{
+		fontSize: 18
+	},
+	followersUser: {
+		
+	},
+
 	border: {
+    container: {
+        flex: 1,
+        marginTop: 50
+    }, subject: {
+        fontSize: 25,
+        fontWeight: "bold",
+        color: "blue"
+    }, row: {
+        flexDirection: 'row'
+    }, wrap: {
+        flexWrap: "wrap"
+    }, margin: {
+        margin: 1
+    }, avatar: {
+        width: 50,
+        height: 50,
+        borderRadius: 20
+        
+    }, name: {
+        color: "green",
+		fontWeight: 500
+    }, absolute: {
+        position: "absolute",
+    },
+    flexEnd: {
+		justifyContent: "flex-end",
+	},
+    border: {
 		borderWidth: 0,
 		borderRadius: 0,
 	},
@@ -129,4 +167,7 @@ export default StyleSheet.create({
 			backdrop: "rgba(44, 50, 42, 0.4)",
 		},
 	},
-});
+	sendIcon: {
+		marginLeft: 10,
+    }
+},});

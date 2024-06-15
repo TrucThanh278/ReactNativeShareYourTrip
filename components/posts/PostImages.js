@@ -1,42 +1,79 @@
-import React from "react";
-import { View, Image, Text } from "react-native";
+import React, { useState } from "react";
+import { TouchableOpacity, View, Image, Text } from "react-native";
+import ImageViewing from "react-native-image-viewing";
 
 const PostImages = ({ images }) => {
+	const [visible, setVisible] = useState(false);
+	const [imageIndex, setImageIndex] = useState(0);
+	const [currentImages, setCurrentImages] = useState([]);
+
+	const openImageViewer = (index, images) => {
+		setImageIndex(index);
+		setCurrentImages(images);
+		setVisible(true);
+	};
+
 	const renderImages = () => {
 		switch (images.length) {
 			case 1:
 				return (
-					<Image
-						source={{ uri: images[0].image }}
-						style={{ width: "100%", height: 200 }}
-					/>
+					<View>
+						<TouchableOpacity
+							key={images[0].id}
+							style={{ width: "100%", height: 200 }}
+							onPress={() => openImageViewer(0, images)}
+						>
+							<Image
+								source={{ uri: images[0].image }}
+								style={{ width: "100%", height: 200 }}
+							/>
+						</TouchableOpacity>
+					</View>
 				);
 			case 2:
 				return (
 					<View style={{ flexDirection: "row" }}>
 						{images.map((image, index) => (
-							<Image
-								key={index}
-								source={{ uri: image.image }}
+							<TouchableOpacity
+								key={image.id}
 								style={{ flex: 1, height: 200 }}
-							/>
+								onPress={() => openImageViewer(index, images)}
+							>
+								<Image
+									source={{ uri: image.image }}
+									style={{ flex: 1, height: 200 }}
+								/>
+							</TouchableOpacity>
 						))}
 					</View>
 				);
 			case 3:
 				return (
 					<View>
-						<Image
-							source={{ uri: images[0].image }}
+						<TouchableOpacity
+							key={images[0].id}
 							style={{ width: "100%", height: 200 }}
-						/>
+							onPress={() => openImageViewer(0, images)}
+						>
+							<Image
+								source={{ uri: images[0].image }}
+								style={{ width: "100%", height: 200 }}
+							/>
+						</TouchableOpacity>
 						<View style={{ flexDirection: "row" }}>
 							{images.slice(1).map((image, index) => (
-								<Image
-									key={index}
-									source={{ uri: image.image }}
+								<TouchableOpacity
+									key={image.id}
 									style={{ flex: 1, height: 200 }}
-								/>
+									onPress={() =>
+										openImageViewer(index + 1, images)
+									}
+								>
+									<Image
+										source={{ uri: image.image }}
+										style={{ flex: 1, height: 200 }}
+									/>
+								</TouchableOpacity>
 							))}
 						</View>
 					</View>
@@ -46,18 +83,31 @@ const PostImages = ({ images }) => {
 					<View>
 						<View style={{ flexDirection: "row" }}>
 							{images.slice(0, 2).map((image, index) => (
-								<Image
-									key={index}
-									source={{ uri: image.image }}
+								<TouchableOpacity
+									key={image.id}
 									style={{ flex: 1, height: 200 }}
-								/>
+									onPress={() =>
+										openImageViewer(index, images)
+									}
+								>
+									<Image
+										source={{ uri: image.image }}
+										style={{ flex: 1, height: 200 }}
+									/>
+								</TouchableOpacity>
 							))}
 						</View>
 						<View style={{ flexDirection: "row" }}>
-							<Image
-								source={{ uri: images[2].image }}
+							<TouchableOpacity
+								key={images[2].id}
 								style={{ flex: 1, height: 200 }}
-							/>
+								onPress={() => openImageViewer(2, images)}
+							>
+								<Image
+									source={{ uri: images[2].image }}
+									style={{ flex: 1, height: 200 }}
+								/>
+							</TouchableOpacity>
 							<View
 								style={{
 									flex: 1,
@@ -65,10 +115,19 @@ const PostImages = ({ images }) => {
 									position: "relative",
 								}}
 							>
-								<Image
-									source={{ uri: images[3].image }}
+								<TouchableOpacity
+									key={images[3].id}
 									style={{ width: "100%", height: "100%" }}
-								/>
+									onPress={() => openImageViewer(3, images)}
+								>
+									<Image
+										source={{ uri: images[3].image }}
+										style={{
+											width: "100%",
+											height: "100%",
+										}}
+									/>
+								</TouchableOpacity>
 								{images.length > 4 && (
 									<View
 										style={{
@@ -82,14 +141,20 @@ const PostImages = ({ images }) => {
 											alignItems: "center",
 										}}
 									>
-										<Text
-											style={{
-												color: "white",
-												fontSize: 30,
-											}}
+										<TouchableOpacity
+											onPress={() =>
+												openImageViewer(3, images)
+											}
 										>
-											+{images.length - 4}
-										</Text>
+											<Text
+												style={{
+													color: "white",
+													fontSize: 30,
+												}}
+											>
+												+{images.length - 4}
+											</Text>
+										</TouchableOpacity>
 									</View>
 								)}
 							</View>
@@ -99,7 +164,17 @@ const PostImages = ({ images }) => {
 		}
 	};
 
-	return <View>{renderImages()}</View>;
+	return (
+		<View>
+			{renderImages()}
+			<ImageViewing
+				images={currentImages.map((img) => ({ uri: img.image }))}
+				imageIndex={imageIndex}
+				visible={visible}
+				onRequestClose={() => setVisible(false)}
+			/>
+		</View>
+	);
 };
 
 export default PostImages;
