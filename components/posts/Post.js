@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { View, ScrollView, ActivityIndicator } from "react-native";
-import { Searchbar } from "react-native-paper";
+import { Searchbar, Button } from "react-native-paper";
 import MyStyles from "../../styles/MyStyles";
 import APIs, { endpoints } from "../../configs/APIs";
 import PostInfo from "../utils/PostInfo";
@@ -81,11 +81,19 @@ const Post = ({ navigation }) => {
 
 	return (
 		<View style={[MyStyles.container, MyStyles.margin]}>
-			<View>
-				<Searchbar
-					placeholder="Nhập từ khóa của chuyến đi..."
-					onChangeText={(t) => search(t, setQ)}
-				/>
+			<View style={MyStyles.row}>
+			<Searchbar
+				style={MyStyles.searchBar}
+				placeholder="Tìm kiếm chuyến đi..."
+				onChangeText={(t) => search(t, setQ)}
+			/>
+			<Button
+				style={MyStyles.buttonPlan}
+				icon="plus-box-multiple"
+				onPress={() => navigation.navigate('CreatePost')}
+			>
+				Tạo
+			</Button>
 			</View>
 			<ScrollView onScroll={loadMore}>
 				{loading && posts.length === 0 ? (

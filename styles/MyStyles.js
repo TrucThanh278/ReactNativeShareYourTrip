@@ -27,6 +27,26 @@ export default StyleSheet.create({
 		height: 80,
 		borderRadius: 20,
 	},
+	rowHeader: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		justifyContent: 'space-between',
+	},
+	searchBar: {
+		flex: 11, 
+		marginRight: 8,
+	},
+	buttonPlan: {
+		flex: 1,
+		justifyContent: "center"
+	},
+	nameUser:{
+		fontSize: 18
+	},
+	followersUser: {
+		
+	},
+
 	border: {
     container: {
         flex: 1,
@@ -149,11 +169,5 @@ export default StyleSheet.create({
 	},
 	sendIcon: {
 		marginLeft: 10,
-    },
-	width70: {
-		width: "70%"
-	},
-	width30: {
-		width: "30%"
-	}
+    }
 },});

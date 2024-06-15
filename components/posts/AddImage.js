@@ -33,12 +33,12 @@ const AddImage = ({ navigation, route }) => {
 		}
 	};
 
-	const handleUploadImage = async () => {
-		try {
-			if (!imageUri) {
-				Alert.alert("Error", "Please select an image");
-				return;
-			}
+  const handleUploadImage = async () => {
+    try {
+      if (!imageUri) {
+        Alert.alert('Lỗi', 'Vui lòng chọn ảnh');
+        return;
+      }
 
 			const formData = new FormData();
 			formData.append("image", {
@@ -49,67 +49,66 @@ const AddImage = ({ navigation, route }) => {
 			formData.append("post", postId);
 
 			console.log("FormData:", formData);
+      const response = await fetch('http://192.168.1.30:8000/images/', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data',
+        },
+        body: formData,
+      });
 
-			const response = await fetch("http://192.168.1.7:8000/images/", {
-				method: "POST",
-				headers: {
-					Authorization: `Bearer ${token}`,
-					"Content-Type": "multipart/form-data",
-				},
-				body: formData,
-			});
+      if (response.ok) {
+        Alert.alert('Thành công', 'Đăng ảnh thành công');
+        setImageUri(null);
+      } else {
+        Alert.alert('Thất bại', 'Đăng ảnh thất bại');
+      }
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      Alert.alert('Lỗi', 'Lỗi đăng ảnh');
+    }
+  };
 
-			if (response.ok) {
-				Alert.alert("Success", "Image uploaded successfully");
-				setImageUri(null);
-			} else {
-				Alert.alert("Error", "Failed to upload image");
-			}
-		} catch (error) {
-			console.error("Error uploading image:", error);
-			Alert.alert("Error", "Failed to upload image");
-		}
-	};
+  return (
+    <View style={styles.container}>
+      {imageUri ? (
+        <Image source={{ uri: imageUri }} style={styles.image} />
+      ) : (
+        <Text>No image selected</Text>
+      )}
+      <View style={styles.marginTop}>
+        <Button title="Chọn ảnh" onPress={pickImage} />
+      </View>
+      <View style={styles.marginTop}>
+        <Button title="Đăng ảnh" onPress={handleUploadImage} />
+      </View>
+      <View style={styles.margin}>
+        <Button title="Trở về trang chủ" onPress={() => navigation.navigate('HomeScreen')} />
+      </View>
 
-	return (
-		<View style={styles.container}>
-			{imageUri ? (
-				<Image source={{ uri: imageUri }} style={styles.image} />
-			) : (
-				<Text>No image selected</Text>
-			)}
-			<Button title="Choose Image" onPress={pickImage} />
-			<Button
-				style={styles.margin}
-				title="Upload Image"
-				onPress={handleUploadImage}
-			/>
-			<Button
-				title="Go to Home"
-				onPress={() => navigation.navigate("Home")}
-			/>
-		</View>
-	);
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		justifyContent: "center",
-		alignItems: "center",
-		padding: 20,
-	},
-	image: {
-		width: 200,
-		height: 200,
-		marginBottom: 20,
-	},
-	margin: {
-		margin: 10,
-	},
-	marginTop: {
-		marginTop: 10,
-	},
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  image: {
+    width: 200,
+    height: 200,
+    marginBottom: 20,
+  },
+  margin: {
+    marginTop: 200
+  },
+  marginTop: {
+    marginTop: 10
+  }
 });
 
 export default AddImage;

@@ -57,7 +57,7 @@ const RatingDetail = ({ route }) => {
       Alert.alert('Thành công', 'Đánh giá đã được gửi thành công');
       navigation.goBack();
     } catch (error) {
-      console.error('Lỗi khi gửi đánh giá:', error);
+      console.log('Lỗi khi gửi đánh giá:', error);
       Alert.alert('Lỗi', 'Không thể gửi đánh giá. Vui lòng thử lại sau.');
     }
   };

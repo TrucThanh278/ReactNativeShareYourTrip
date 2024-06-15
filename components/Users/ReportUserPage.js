@@ -11,28 +11,47 @@ const ReportUserPage = ({ userId, token }) => {
     }, []); // Chỉ chạy một lần sau khi component được render lần đầu tiên
 
     const handleReport = async () => {
+        if (!reportContent.trim()) {
+            Alert.alert('Lý do trống', 'Bạn phải bổ sung lý do');
+            return;
+        }
+
+        if (!token) {
+            Alert.alert('Lỗi', 'Vui lòng đăng nhập');
+            return;
+        }
+
         try {
             const api = authApi(token);
             const response = await api.post(endpoints['report-user'], {
                 reported_user: userId,
                 content: reportContent
             });
-            Alert.alert('Report Success', 'User has been reported successfully!');
+            // Kiểm tra nếu response có mã trạng thái thành công (200 hoặc 201)
+            if (response.status === 200 || response.status === 201) {
+                Alert.alert('Report thành công', 'Bạn đã report thành công!');
+                setReportContent(''); // Xóa nội dung báo cáo sau khi thành công
+            } else {
+                console.error('Response status:', response.status);
+                console.error('Response data:', response.data);
+                throw new Error('Network response was not ok');
+            }
         } catch (error) {
             console.error('Report failed:', error);
-            Alert.alert('Report Failed', 'An error occurred while reporting user. Please try again later.');
+            Alert.alert('Report thất bại', 'Đã xảy ra lỗi khi báo cáo người dùng. Vui lòng thử lại sau.');
         }
     };
 
     return (
         <View>
             <TextInput
-                placeholder="Enter report content"
+                placeholder="Nhập lý do báo cáo"
                 value={reportContent}
                 onChangeText={setReportContent}
                 multiline
+                style={{ height: 100, borderColor: 'gray', borderWidth: 1, marginBottom: 10, padding: 10 }}
             />
-            <Button title="Report" onPress={handleReport} />
+            <Button title="Báo cáo" onPress={handleReport} />
         </View>
     );
 };
