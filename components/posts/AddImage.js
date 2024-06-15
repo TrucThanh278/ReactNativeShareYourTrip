@@ -32,7 +32,7 @@ const AddImage = ({ navigation, route }) => {
   const handleUploadImage = async () => {
     try {
       if (!imageUri) {
-        Alert.alert('Error', 'Please select an image');
+        Alert.alert('Lỗi', 'Vui lòng chọn ảnh');
         return;
       }
 
@@ -46,7 +46,7 @@ const AddImage = ({ navigation, route }) => {
 
       console.log('FormData:', formData);
 
-      const response = await fetch('http://172.16.12.10:8000/images/', {
+      const response = await fetch('http://192.168.1.30:8000/images/', {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -56,14 +56,14 @@ const AddImage = ({ navigation, route }) => {
       });
 
       if (response.ok) {
-        Alert.alert('Success', 'Image uploaded successfully');
+        Alert.alert('Thành công', 'Đăng ảnh thành công');
         setImageUri(null);
       } else {
-        Alert.alert('Error', 'Failed to upload image');
+        Alert.alert('Thất bại', 'Đăng ảnh thất bại');
       }
     } catch (error) {
       console.error('Error uploading image:', error);
-      Alert.alert('Error', 'Failed to upload image');
+      Alert.alert('Lỗi', 'Lỗi đăng ảnh');
     }
   };
 
@@ -74,9 +74,16 @@ const AddImage = ({ navigation, route }) => {
       ) : (
         <Text>No image selected</Text>
       )}
-      <Button title="Choose Image" onPress={pickImage} />
-      <Button style={styles.margin} title="Upload Image" onPress={handleUploadImage} />
-      <Button title="Go to Home" onPress={() => navigation.navigate('Home')} />
+      <View style={styles.marginTop}>
+        <Button title="Chọn ảnh" onPress={pickImage} />
+      </View>
+      <View style={styles.marginTop}>
+        <Button title="Đăng ảnh" onPress={handleUploadImage} />
+      </View>
+      <View style={styles.margin}>
+        <Button title="Trở về trang chủ" onPress={() => navigation.navigate('HomeScreen')} />
+      </View>
+
     </View>
   );
 };
@@ -94,7 +101,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   margin: {
-    margin: 10
+    marginTop: 200
   },
   marginTop: {
     marginTop: 10

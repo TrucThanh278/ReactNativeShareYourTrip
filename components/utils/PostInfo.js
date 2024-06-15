@@ -29,7 +29,7 @@ const PostInfo = ({ post, loading }) => {
 	const fetchAverageRating = async (postId) => {
 		try {
 			const response = await fetch(
-				`http://192.168.1.5/posts/${postId}/average_rating/`
+				`http://192.168.1.30:8000/posts/${postId}/average_rating/`
 			);
 			if (!response.ok) {
 				throw new Error("Network response was not ok");
@@ -69,63 +69,6 @@ const PostInfo = ({ post, loading }) => {
 		return stars;
 	};
 
-	// return (
-	// 	<Card style={[MyStyles.margin, MyStyles.border]}>
-	// 		{loading && <ActivityIndicator />}
-	// 		<PostImages images={post.images} />
-	// 		<Card.Actions>
-	// 			<View
-	// 				style={{
-	// 					flex: 1,
-	// 					flexDirection: "row",
-	// 					alignItems: "center",
-	// 				}}
-	// 			>
-	// 				<TextInput
-	// 					style={{
-	// 						borderRadius: 10,
-	// 						backgroundColor: "#fff",
-	// 						flex: 1,
-	// 					}}
-	// 					placeholder="Nhập comment..."
-	// 					mode="outlined"
-	// 					label="Comment"
-	// 					onFocus={toggleModal} // Show modal when TextInput is focused
-	// 				/>
-	// 				<IconButton
-	// 					icon="send"
-	// 					size={24}
-	// 					onPress={() => alert("Hello")}
-	// 					style={MyStyles.sendIcon}
-	// 				/>
-	// 			</View>
-	// 			{post.active ? (
-	// 				<></>
-	// 			) : (
-	// 				<Button
-	// 					onPress={() =>
-	// 						navigation.navigate("PostDetail", {
-	// 							postId: post.id,
-	// 						})
-	// 					}
-	// 				>
-	// 					Chi tiết
-	// 				</Button>
-	// 			)}
-	// 		</Card.Actions>
-
-	// 		{post.active ? (
-	// 			<></>
-	// 		) : (
-	// 			<CommentModal
-	// 				isVisible={isModalVisible}
-	// 				postId={post.id}
-	// 				onClose={toggleModal}
-	// 			/>
-	// 		)}
-	// 	</Card>
-	// );
-
 	return (
 		<Card style={[MyStyles.margin, MyStyles.border]}>
 			<TouchableHighlight
@@ -139,7 +82,7 @@ const PostInfo = ({ post, loading }) => {
 			>
 				<Card.Title
 					title={`${post.user.first_name} ${post.user.last_name}`}
-					subtitle={post.user.following}
+					subtitle={`${post.user.followers} người theo dõi`}
 					left={(props) => (
 						<Avatar.Image
 							{...props}
@@ -149,24 +92,41 @@ const PostInfo = ({ post, loading }) => {
 							}}
 						/>
 					)}
+
+					titleStyle = {MyStyles.nameUser}
+					subtitleStyle = {MyStyles.followersUser}
 				/>
 			</TouchableHighlight>
+			
+					
 
 			<Card.Content style={{ margin: 0 }}>
 				<Title>{post.title}</Title>
 				<Paragraph>
 					{post.starting_point} to {post.end_point}
 				</Paragraph>
+				<View style={MyStyles.row}>
+					<View style={{ flexDirection: "row", alignItems: "center" }}>
+						{renderStars()}
+						{averageRating !== null && (
+							<Paragraph style={{ marginLeft: 5 }}>
+								Điểm sao: {averageRating.toFixed(2)}
+							</Paragraph>
+						)}
+					</View>
 
-				{<Hashtag hashtags={post.hashtags} />}
-				<View style={{ flexDirection: "row", alignItems: "center" }}>
-					{renderStars()}
-					{averageRating !== null && (
-						<Paragraph style={{ marginLeft: 5 }}>
-							Average Rating: {averageRating.toFixed(2)}
-						</Paragraph>
-					)}
+					<Button
+						onPress={() =>
+							navigation.navigate("RatingDetail", {
+								postId: post.id,
+							})
+						}
+					>
+						Đánh giá
+					</Button>
 				</View>
+				{<Hashtag hashtags={post.hashtags_read} />}
+
 			</Card.Content>
 			{loading && <ActivityIndicator />}
 			{<PostImages images={post.images} />}
@@ -184,9 +144,9 @@ const PostInfo = ({ post, loading }) => {
 							backgroundColor: "#fff",
 							flex: 1,
 						}}
-						placeholder="Nhập comment..."
+						placeholder="Nhập bình luận..."
 						mode="outlined"
-						label="Comment"
+						label="Bình luận"
 						onFocus={toggleModal} // Show modal when TextInput is focused
 					/>
 					<IconButton
@@ -207,19 +167,10 @@ const PostInfo = ({ post, loading }) => {
 							})
 						}
 					>
-						Detail
+						Chi tiết
 					</Button>
 				)}
-				<Button
-					icon={"star"}
-					onPress={() =>
-						navigation.navigate("RatingDetail", {
-							postId: post.id,
-						})
-					}
-				>
-					Rating
-				</Button>
+
 			</Card.Actions>
 			{post.active ? (
 				<></>

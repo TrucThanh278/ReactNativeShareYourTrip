@@ -1,23 +1,40 @@
-import { useContext } from "react"
-import { Button } from "react-native"
-import Context from "../../configs/Context"
-import Styles from "./Styles"
+import React, { useContext } from 'react';
+import { Button } from 'react-native-paper';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { MyDispatchContext } from '../../configs/Context';
+import axios from 'axios';
 
-const Logout = (navigation) => {
-    const [user, dispatch] = useContext(Context)
+const Logout = ({ navigation }) => {
+    const dispatch = useContext(MyDispatchContext);
 
-    const logout = () => {
-        dispatch({
-            "type": "logout"
-        })
-    }
+    const logout = async () => {
+        try {
+            const token = await AsyncStorage.getItem("token");
 
-    if (user === null) 
-         return <Button title="Login" onPress={() => navigation.navigate("Login")}/>
-    
+            // Gửi yêu cầu để xóa accessToken từ backend
+            if (token) {
+                await axios.delete('http://192.168.1.30:8000/api/logout', {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+            }
 
-    return <Button title="Logout" onPress={logout}/>
-    
-}
+            // Xóa accessToken từ AsyncStorage
+            await AsyncStorage.removeItem("token");
+            console.log("Token removed successfully from AsyncStorage");
 
-export default Logout
+            // Dispatch action để đánh dấu người dùng đã logout
+            dispatch({ type: "logout" });
+
+            // Chuyển hướng người dùng đến màn hình đăng nhập
+            navigation.navigate("Login");
+        } catch (e) {
+            console.error("Failed to remove the user token or logout from backend.", e);
+        }
+    };
+
+    return <Button icon="logout" mode="contained" onPress={logout}>Thoát</Button>;
+};
+
+export default Logout;

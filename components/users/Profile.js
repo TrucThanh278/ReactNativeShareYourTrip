@@ -1,216 +1,164 @@
-
 import React, { useEffect, useState, useContext } from "react";
-import { View, Image, Text, StyleSheet, TouchableOpacity,ScrollView } from "react-native";
+import { View, Image, Text, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
 import { Button } from "react-native-paper";
 import { MyDispatchContext, MyUserContext } from "../../configs/Context";
 import MyStyles from "../../styles/MyStyles";
-import { FontAwesome } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { authApi, endpoints } from '../../configs/APIs'; // Import các cấu hình API
+import { authApi, endpoints } from '../../configs/APIs'; // Import API configurations
+import Logout from "./Logout";
 
 const Profile = ({ navigation }) => {
     const dispatch = useContext(MyDispatchContext);
-    const [user, setUser] = useState(null);
+    const user = useContext(MyUserContext);
     const [avatar, setAvatar] = useState(null);
-    const [coverPhoto, setCoverPhoto] = useState(null);
+    const [posts, setPosts] = useState([]);
+    const [loading, setLoading] = useState(true); // State to manage loading state
+    const [postCount, setPostCount] = useState(0); // State to store the count of user's posts
 
     useEffect(() => {
         const fetchUserData = async () => {
             try {
                 const token = await AsyncStorage.getItem('token');
                 if (token) {
+                    // Lấy thông tin người dùng hiện tại
                     const response = await authApi(token).get(endpoints['current-user']);
-                    setUser(response.data);
                     setAvatar(response.data.avatar);
+
+                    // Lấy danh sách bài đăng của người dùng hiện tại
+                    const userId = response.data.id;
+                    const userPostsResponse = await authApi(token).get(endpoints['posts'], { params: { user: userId } });
+
+                    // Kiểm tra dữ liệu trả về có phù hợp không
+                    if (Array.isArray(userPostsResponse.data.results)) {
+                        // Xử lý từng bài đăng để lấy hình ảnh và hiển thị
+                        const postsWithImages = await Promise.all(
+                            userPostsResponse.data.results.map(async (post) => {
+                                // Lấy hình ảnh của bài đăng từ endpoint images
+                                const postImageUrl = `http://192.168.1.30:8000/posts/${post.id}/images`;
+                                const postImageResponse = await authApi(token).get(postImageUrl);
+                                return {
+                                    ...post,
+                                    images: postImageResponse.data.map(image => image.image),
+                                };
+                            })
+                        );
+
+                        // Lọc chỉ những bài đăng của người dùng hiện tại
+                        const filteredPosts = postsWithImages.filter(post => post.user.id === userId);
+
+                        // Cập nhật state với danh sách bài đăng đã có hình ảnh
+                        setPosts(filteredPosts);
+                        setPostCount(filteredPosts.length); // Cập nhật số lượng bài đăng
+
+                        setLoading(false);
+                    } else {
+                        console.error("User posts data structure is invalid:", userPostsResponse.data);
+                        setLoading(false);
+                    }
                 }
             } catch (error) {
-                console.error(error);
+                console.error("Error fetching user data:", error);
+                setLoading(false);
             }
         };
 
         fetchUserData();
     }, []);
 
-
     const pickAvatar = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.All,
             allowsEditing: true,
-            aspect: [4, 3],
+            aspect: [1, 1],
             quality: 1,
         });
 
         if (!result.cancelled) {
             setAvatar(result.uri);
+            // Here you can add logic to update the avatar on the server as well
         }
     };
 
-    const pickCoverPhoto = async () => {
-        let result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.All,
-            allowsEditing: true,
-            aspect: [16, 9],
-            quality: 1,
-        });
-
-        if (!result.cancelled) {
-            setCoverPhoto(result.uri);
-        }
-    };
-
-    if (!user) {
-        return <Text>Loading...</Text>;
+    if (!user || loading) {
+        return <Text>Loading...</Text>; // Render loading indicator until user and posts are fetched
     }
 
     return (
         <ScrollView style={[MyStyles.container, MyStyles.margin]}>
-
             <View>
-                <TouchableOpacity onPress={pickCoverPhoto}>
-                    <Image source={coverPhoto ? { uri: coverPhoto } : require("./assets/images/default_cover.jpg")} style={styles.coverPhoto} />
-                </TouchableOpacity>
-                <View style={[ styles.position ,styles.margin_avatar]}>
-                    <TouchableOpacity onPress={pickAvatar}>
-                        {avatar ? (
-                            <Image source={{ uri: avatar }} style={styles.avatar} />
-                        ) : (
-                            <Image source={require('./assets/images/default_avatar.jpg')} style={styles.avatar} />
-                        )}
-                    </TouchableOpacity>
-                </View>  
-                <View style={{marginTop: 25}}>
+                {/* Cover photo and Avatar section */}
+                <View>
+                    {/* Cover photo (implement your logic here) */}
+                    <Image source={require('./assets/images/default_cover.jpg')} style={styles.coverPhoto} />
+
+                    {/* Avatar section */}
+                    <View style={[styles.position, styles.margin_avatar]}>
+                        <TouchableOpacity onPress={pickAvatar}>
+                            <Image source={avatar ? { uri: avatar } : require('./assets/images/default_avatar.jpg')} style={styles.avatar} />
+                        </TouchableOpacity>
+                    </View>
+                </View>
+
+                {/* User information section */}
+                <View style={{ marginTop: 25 }}>
                     <Text style={[styles.subject, styles.margin_left]}> {user.first_name} {user.last_name}</Text>
                     <View style={[MyStyles.row]}>
-                            <Text style={[styles.text, MyStyles.margin]}>Follower: {user.followers}</Text>
-                            <Text style={[styles.text, MyStyles.margin]}>Following: {user.following}</Text>
+                        <Text style={[styles.text, MyStyles.margin]}>Theo dõi: {user.followers}</Text>
+                        <Text style={[styles.text, MyStyles.margin]}>Đang theo dõi: {user.following}</Text>
                     </View>
                     <View style={styles.ratingContainer}>
-                            <Text style={[styles.text]}>Reports: {user.reported_user} </Text>
+                        <Text style={[styles.text]}>Báo cáo: {user.reported_user} </Text>
                     </View>
                     <Text style={styles.text}>Email: {user.email}</Text>
-                    <Text style={styles.text}>Phone: {user.phone_number}</Text>
-                    <Button icon="pencil" buttonColor="rgb(79, 133, 13)" mode="contained" onPress={() => navigation.navigate('UpdateProfile')} >Update</Button>
-                    <Button icon="logout"  onPress={() => dispatch({ type: "logout" })}>Logout</Button>
+                    <Text style={styles.text}>Số điện thoại: {user.phone_number}</Text>
 
-                    <View style={styles.collections}>
-                    <Text style={styles.sectionTitle}>Personal Collections</Text>
-                    <ScrollView horizontal style={{ height: 150 }}>
-                        <View
-                            style={{
-                                height: "100%",
-                                position: "relative",
-                                width: 250,
-                                margin: 5,
-                            }}
-                        >
-                            <Image
-                                source={{
-                                    uri: "https://res.cloudinary.com/djyggobeq/image/upload/v1715852352/dzvud8wptqigfnbsoemr.jpg",
-                                }}
-                                style={{ width: "100%", height: "100%" }}
-                            />
-                            <View
-                                style={{
-                                    position: "absolute",
-                                    top: 0,
-                                    bottom: 0,
-                                    right: 0,
-                                    left: 0,
-                                    backgroundColor: "rgba(0,0,0,0.2)",
-                                    justifyContent: "center",
-                                    alignItems: "center",
-                                }}
-                            >
-                                <Text>Content</Text>
-                            </View>
-                        </View>
+                    {/* Button to navigate to update profile screen */}
+                    <Button icon="pencil"
+                        style={[styles.button]}
+                        buttonColor="rgb(79, 133, 13)"
+                        mode="contained" onPress={() => navigation.navigate('UpdateProfile')} >
+                        Cập nhật hồ sơ
+                    </Button>
 
-                        <View
-                            style={{
-                                height: "100%",
-                                position: "relative",
-                                width: 250,
-                                margin: 5,
-                            }}
-                        >
-                            <Image
-                                source={{
-                                    uri: "https://res.cloudinary.com/djyggobeq/image/upload/v1715852352/dzvud8wptqigfnbsoemr.jpg",
-                                }}
-                                style={{ width: "100%", height: "100%" }}
-                            />
-                            <View
-                                style={{
-                                    position: "absolute",
-                                    top: 0,
-                                    bottom: 0,
-                                    right: 0,
-                                    left: 0,
-                                    backgroundColor: "rgba(0,0,0,0.2)",
-                                    justifyContent: "center",
-                                    alignItems: "center",
-                                }}
-                            >
-                                <Text>Content</Text>
-                            </View>
-                        </View>
+                    {/* Logout button component */}
+                    <Logout navigation={navigation} />
 
-                        <View
-                            style={{
-                                height: "100%",
-                                position: "relative",
-                                width: 250,
-                                margin: 5,
-                            }}
-                        >
-                            <Image
-                                source={{
-                                    uri: "https://res.cloudinary.com/djyggobeq/image/upload/v1715852352/dzvud8wptqigfnbsoemr.jpg",
-                                }}
-                                style={{ width: "100%", height: "100%" }}
-                            />
-                            <View
-                                style={{
-                                    position: "absolute",
-                                    top: 0,
-                                    bottom: 0,
-                                    right: 0,
-                                    left: 0,
-                                    backgroundColor: "rgba(0,0,0,0.2)",
-                                    justifyContent: "center",
-                                    alignItems: "center",
-                                }}
-                            >
-                                <Text>Content</Text>
-                            </View>
-                        </View>
-                    </ScrollView>
+
                 </View>
-			</View>
 
-			<View style={styles.stats}>
-				<Text style={styles.sectionTitle}>Tours</Text>
-				<View style={styles.statItem}>
-					<Text style={styles.statLabel}>Planned</Text>
-					<Text style={styles.statValue}>441</Text>
-				</View>
-				<View style={styles.statItem}>
-					<Text style={styles.statLabel}>Completed</Text>
-					<Text style={styles.statValue}>825</Text>
-				</View>
+                {/* Personal collection section */}
+                <View style={styles.collections}>
+                    <Text style={styles.sectionTitle}>Bộ sưu tập cá nhân</Text>
+                    <ScrollView horizontal style={{ height: 150 }}>
+                        {posts && posts.length > 0 ? (
+                            posts.map((post, index) => (
+                                post.images.map((image, imgIndex) => (
+                                    <View key={`${index}-${imgIndex}`} style={styles.postContainer}>
+                                        <Image source={{ uri: image }} style={styles.postImage} />
+                                        <View style={styles.overlay}>
+                                            <Text style={styles.overlayText}>{post.title}</Text>
+                                        </View>
+                                    </View>
+                                ))
+                            ))
+                        ) : (
+                            <Text>No posts found</Text>
+                        )}
+                    </ScrollView>
 
-				<Text style={styles.sectionTitle}>Highlights</Text>
-				<View style={styles.statItem}>
-					<Text style={styles.statLabel}>Recommended</Text>
-					<Text style={styles.statValue}>1674</Text>
-				</View>
-			</View>
-                
+                    <Text style={styles.sectionTitle}>Chuyến đi</Text>
+                    <View style={styles.statItem}>
+                        <Text style={styles.statLabel}>Đã lên kế hoạch</Text>
+                        {/* Display number of posts */}
+                        <Text style={styles.statValue}>{postCount}</Text>
+                    </View>
+                </View>
+
             </View>
         </ScrollView>
     );
-}
+};
 
 const styles = StyleSheet.create({
     subject: {
@@ -231,6 +179,10 @@ const styles = StyleSheet.create({
     },
     text: {
         marginBottom: 5,
+        marginLeft: 10
+    },
+    button: {
+        marginBottom: 5,
     },
     ratingContainer: {
         flexDirection: "row",
@@ -246,35 +198,60 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     margin_right: {
-        marginRight:15
+        marginRight: 15
     },
-	collections: {
-		padding: 20,
-	},
-	sectionTitle: {
-		fontSize: 20,
-		fontWeight: "bold",
-		marginBottom: 10,
-	},
-	stats: {
-		padding: 20,
-	},
-	statItem: {
-		flexDirection: "row",
-		justifyContent: "space-between",
-		paddingVertical: 10,
-	},
-	statLabel: {
-		fontSize: 18,
-	},
-	statValue: {
-		fontSize: 18,
-		color: "#888",
-	},
-    margin_left :{
-        marginLeft:20
+    collections: {
+        padding: 20,
+    },
+    sectionTitle: {
+        fontSize: 20,
+        fontWeight: "bold",
+        marginTop: 20
+    },
+    postContainer: {
+        height: "100%",
+        position: "relative",
+        width: 250,
+        margin: 5,
+    },
+    postImage: {
+        width: "100%",
+        height: "100%",
+    },
+    overlay: {
+        position: "absolute",
+        top: 0,
+        bottom: 0,
+        right: 0,
+        left: 0,
+        backgroundColor: "rgba(0,0,0,0.2)",
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    overlayText: {
+        color: "#fff",
+        fontSize: 16,
+    },
+    stats: {
+        padding: 20,
+    },
+    statItem: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        paddingVertical: 10,
+    },
+    statLabel: {
+        fontSize: 18,
+    },
+    statValue: {
+        fontSize: 18,
+        color: "#888",
+    },
+    margin_left: {
+        marginLeft: 20
     }
 });
 
 export default Profile;
+
 

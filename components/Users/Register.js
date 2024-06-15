@@ -5,16 +5,17 @@ import MyStyles from "../../styles/MyStyles";
 import * as ImagePicker from 'expo-image-picker';
 import axios from 'axios';
 import { useNavigation } from "@react-navigation/native";
+import Styles from "./Styles";
 
 const Register = () => {
     const fields = [
-        { label: "First Name", icon: "text", field: "first_name" },
-        { label: "Last Name", icon: "text", field: "last_name" },
+        { label: "Tên", icon: "text", field: "first_name" },
+        { label: "Họ và tên đệm", icon: "text", field: "last_name" },
         { label: "Email", icon: "email", field: "email" },
-        { label: "Phone", icon: "phone", field: "phone_number" },
-        { label: "Username", icon: "account", field: "username" },
-        { label: "Password", icon: "eye", field: "password", secureTextEntry: true },
-        { label: "Confirm Password", icon: "eye", field: "confirm", secureTextEntry: true }
+        { label: "Số điện thoại", icon: "phone", field: "phone_number" },
+        { label: "Tên đăng nhập", icon: "account", field: "username" },
+        { label: "Mật khẩu", icon: "eye", field: "password", secureTextEntry: true },
+        { label: "Xác nhận mật khẩu", icon: "eye", field: "confirm", secureTextEntry: true }
     ];
 
     const [user, setUser] = useState({ gender: "men" });
@@ -58,10 +59,8 @@ const Register = () => {
             setLoading(true);
 
             try {
-                console.log('Registering user with form data:', form);
-                console.log('Endpoint:', 'http://172.16.12.10:8000/users/');
                 
-                const response = await axios.post('http://172.16.12.10:8000/users/', form, {
+                const response = await axios.post('http://192.168.1.30:8000/users/', form, {
                     headers: {
                         'Content-Type': 'multipart/form-data'
                     }
@@ -78,9 +77,9 @@ const Register = () => {
                 console.log('Response from server:', ex.response);
 
                 if (ex.response && ex.response.data && ex.response.data.message) {
-                    Alert.alert("Registration Error", ex.response.data.message);
+                    Alert.alert("Lỗi đăng ký", ex.response.data.message);
                 } else {
-                    Alert.alert("Registration Error", "Registration failed. Please try again.");
+                    Alert.alert("Lỗi đăng ký", "Đăng ký thất bại, vui lòng thử lại !!!");
                 }
             } finally {
                 setLoading(false);
@@ -89,11 +88,14 @@ const Register = () => {
     };
 
     return (
-        <ImageBackground source={require('./assets/images/user.jpeg')} style={{ flex: 1 }}>
+        <ImageBackground source={require('./assets/images/user.jpeg')} 
+        style={Styles.imageBackground}
+        blurRadius={5} 
+        >
             <View style={[MyStyles.container, MyStyles.margin]}>
                 <ScrollView>
                     <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-                        <Text style={[MyStyles.subject, MyStyles.name]}>MEMBER REGISTER</Text>
+                        <Text style={[Styles.titleLogin]}>ĐĂNG KÝ THÀNH VIÊN</Text>
                         {fields.map(f => (
                             <TextInput
                                 value={user[f.field]}
@@ -118,7 +120,7 @@ const Register = () => {
                                         uncheckedColor="rgba(255, 255, 255, 0.5)" 
                                         color="white" 
                                     />
-                                    <Text style={{ color: 'white' }}>Men</Text>
+                                    <Text style={{ color: 'white' }}>Nam</Text>
                                 </View>
                                 <View style={[MyStyles.radioContainer, { marginRight: 50 }]}>
                                     <RadioButton 
@@ -126,7 +128,7 @@ const Register = () => {
                                         uncheckedColor="rgba(255, 255, 255, 0.5)" 
                                         color="white" 
                                     />
-                                    <Text style={{ color: 'white' }}>Women</Text>
+                                    <Text style={{ color: 'white' }}>Nữ</Text>
                                 </View>
                                 <View style={MyStyles.radioContainer}>
                                     <RadioButton 
@@ -134,20 +136,20 @@ const Register = () => {
                                         uncheckedColor="rgba(255, 255, 255, 0.5)" 
                                         color="white" 
                                     />
-                                    <Text style={{ color: 'white' }}>Others</Text>
+                                    <Text style={{ color: 'white' }}>Khác</Text>
                                 </View>
                             </View>
                         </RadioButton.Group>
 
                         <TouchableRipple onPress={picker}>
-                            <Text style={[MyStyles.margin, { color: 'white', marginTop: 20 }]}>Choose avatar...</Text>
+                            <Text style={[MyStyles.margin, { color: 'white', marginTop: 20 }]}>Chọn hình đại diện...</Text>
                         </TouchableRipple>
 
-                        <HelperText type="error" visible={err}>Password incorrect!</HelperText>
+                        <HelperText type="error" visible={err}>Mật khẩu xác nhận sai!</HelperText>
 
                         {user.avatar && <Image source={{ uri: user.avatar.uri }} style={MyStyles.avatar} />}
 
-                        <Button loading={loading} icon="account" mode="contained" onPress={register} buttonColor="rgb(79, 133, 13)" style={MyStyles.button}>REGISTER</Button>
+                        <Button loading={loading} icon="account" mode="contained" onPress={register} buttonColor="rgb(79, 133, 13)" style={MyStyles.button}>Đăng Ký</Button>
                     </KeyboardAvoidingView>
                 </ScrollView>
             </View>

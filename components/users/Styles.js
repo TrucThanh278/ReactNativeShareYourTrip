@@ -42,6 +42,15 @@ export default StyleSheet.create({
         height: "100%",
         position: 'relative'
     },
-    
+    titleLogin: {
+        color: "#4F850D",
+        fontSize: 30,
+    },
+    imageBackground: {
+        flex: 1,
+        resizeMode: 'cover',
+        justifyContent: 'center',
+    },
+
     
 })
