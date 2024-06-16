@@ -35,7 +35,7 @@ const Profile = ({ navigation }) => {
                         const postsWithImages = await Promise.all(
                             userPostsResponse.data.results.map(async (post) => {
                                 // Lấy hình ảnh của bài đăng từ endpoint images
-                                const postImageUrl = `http://192.168.1.30:8000/posts/${post.id}/images`;
+                                const postImageUrl = `http://192.168.1.47:8000/posts/${post.id}/images`;
                                 const postImageResponse = await authApi(token).get(postImageUrl);
                                 return {
                                     ...post,

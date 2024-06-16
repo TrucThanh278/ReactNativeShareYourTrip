@@ -31,6 +31,48 @@ const PostInfo = ({ post, loading }) => {
 		setModalVisible(!isModalVisible);
 	};
 
+	const fetchAverageRating = async (postId) => {
+		try {
+			const response = await fetch(
+				`http://192.168.1.47:8000/posts/${postId}/average_rating/`
+			);
+			if (!response.ok) {
+				throw new Error("Network response was not ok");
+			}
+			const data = await response.json();
+			setAverageRating(data.average_rating);
+		} catch (error) {
+			console.error("Error fetching average rating:", error);
+			Alert.alert(
+				"Error",
+				`Failed to fetch average rating: ${error.message}`
+			);
+		}
+	};
+
+	useEffect(() => {
+		fetchAverageRating(post.id);
+	}, [post.id]);
+
+	const renderStars = () => {
+		const stars = [];
+		if (averageRating !== null) {
+			for (let i = 1; i <= 5; i++) {
+				stars.push(
+					<Icon
+						key={i}
+						name={
+							i <= Math.round(averageRating) ? "star" : "star-o"
+						} // Sử dụng icon 'star' hoặc 'star-o' tùy thuộc vào giá trị averageRating
+						size={20}
+						color="#FFD700" // Màu của icon sao
+					/>
+				);
+			}
+		}
+		return stars;
+	};
+
 	const checkLoginStatus = async () => {
 		try {
 			const token = await AsyncStorage.getItem("token");
@@ -38,12 +80,6 @@ const PostInfo = ({ post, loading }) => {
 				setIsLoggedIn(true);
 			} else {
 				setIsLoggedIn(false);
-// 			const response = await fetch(
-// 				`http://192.168.1.30:8000/posts/${postId}/average_rating/`
-// 			);
-// 			if (!response.ok) {
-// 				throw new Error("Network response was not ok");
-
 			}
 		} catch (error) {
 			console.log("Token error: ", error);
@@ -140,25 +176,16 @@ const PostInfo = ({ post, loading }) => {
 							</Paragraph>
 						)}
 					</View>
-				{<Hashtag hashtags={post.hashtags_read} />}
-				<View style={{ flexDirection: "row", alignItems: "center" }}>
-					{/* Render stars function */}
-					{averageRating !== null && (
-						<Paragraph style={{ marginLeft: 5 }}>
-							Average Rating: {averageRating.toFixed(2)}
-						</Paragraph>
-					)}
 
-// 					<Button
-// 						onPress={() =>
-// 							navigation.navigate("RatingDetail", {
-// 								postId: post.id,
-// 							})
-// 						}
-// 					>
-// 						Đánh giá
-// 					</Button>
-
+					<Button
+						onPress={() =>
+							navigation.navigate("RatingDetail", {
+								postId: post.id,
+							})
+						}
+					>
+						Đánh giá
+					</Button>
 				</View>
 				{<Hashtag hashtags={post.hashtags_read} />}
 

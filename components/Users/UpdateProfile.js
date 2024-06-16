@@ -1,15 +1,7 @@
 import React, { useState, useContext } from "react";
-import {
-	View,
-	Text,
-	TextInput,
-	StyleSheet,
-	Button,
-	Alert,
-	Image,
-} from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { authApi, endpoints } from "../../configs/APIs"; // Import cấu hình API
+import { View, Text, TextInput, StyleSheet, Button, Alert, Image } from "react-native";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { authApi, endpoints } from '../../configs/APIs'; // Import cấu hình API
 import MyStyles from "../../styles/MyStyles";
 import { MyDispatchContext, MyUserContext } from "../../configs/Context";
 import * as ImagePicker from 'expo-image-picker';
@@ -54,35 +46,31 @@ const UpdateProfile = ({ navigation }) => {
         }
     };
 
-	const handleAvatarPick = async () => {
-		let { status } =
-			await ImagePicker.requestMediaLibraryPermissionsAsync();
-		if (status !== "granted") {
-			Alert.alert("iCourseApp", "Permissions Denied!");
-		} else {
-			let res = await ImagePicker.launchImageLibraryAsync({
-				mediaTypes: ImagePicker.MediaTypeOptions.Images,
-				allowsEditing: true,
-				aspect: [4, 3],
-				quality: 1,
-			});
-			if (!res.cancelled) {
-				setFormData({
-					...formData,
-					avatar: res.assets[0].uri,
-				});
-			}
-		}
-	};
+    const handleSubmit = async () => {
+        try {
+            const token = await AsyncStorage.getItem('token');
+            if (!token) {
+                throw new Error('Token không tồn tại');
+            }
 
-	const handleSubmit = async () => {
-		try {
-			const token = await AsyncStorage.getItem("token");
-			if (!token) {
-				throw new Error("Token không tồn tại");
-			}
+            const formDataObj = new FormData();
+            formDataObj.append('first_name', formData.first_name);
+            formDataObj.append('last_name', formData.last_name);
+            formDataObj.append('email', formData.email);
+            formDataObj.append('phone_number', formData.phone_number);
+            formDataObj.append('gender', formData.gender);
+            formDataObj.append('address', formData.address);
+            formDataObj.append('date_of_birth', formData.date_of_birth);
+            formDataObj.append('password', formData.password);
+            if (formData.avatar) {
+                formDataObj.append('avatar', {
+                    uri: formData.avatar,
+                    type: 'image/jpeg',
+                    name: 'avatar.jpg'
+                });
+            }
 
-            const response = await fetch(`http://192.168.1.30:8000${endpoints['current-user']}`, {
+            const response = await fetch(`http://192.168.1.47:8000${endpoints['current-user']}`, {
                 method: 'PATCH',
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -90,19 +78,20 @@ const UpdateProfile = ({ navigation }) => {
                 body: formDataObj
             });
 
+            const responseData = await response.json();
 
-			const response = await fetch(
-				`http://192.168.1.6:8000${endpoints["current-user"]}`,
-				{
-					method: "PATCH",
-					headers: {
-						Authorization: `Bearer ${token}`,
-					},
-					body: formDataObj,
-				}
-			);
-
-			const responseData = await response.json();
+            if (response.ok) {
+                dispatch({ type: 'update_user', payload: responseData });
+                Alert.alert('Thành công', 'Cập nhật hồ sơ thành công');
+                navigation.goBack();
+            } else {
+                throw new Error(responseData.detail || 'Có lỗi xảy ra khi cập nhật hồ sơ');
+            }
+        } catch (error) {
+            console.error('Lỗi khi cập nhật hồ sơ:', error);
+            Alert.alert('Lỗi', error.message);
+        }
+    };
 
     return (
         <ScrollView style={[ styles.colorGround]}>

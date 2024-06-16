@@ -14,7 +14,7 @@ const Logout = ({ navigation }) => {
 
             // Gửi yêu cầu để xóa accessToken từ backend
             if (token) {
-                await axios.delete('http://192.168.1.30:8000/api/logout', {
+                await axios.delete('http://192.168.1.47:8000/api/logout', {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }

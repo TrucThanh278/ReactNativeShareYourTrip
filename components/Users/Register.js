@@ -21,6 +21,7 @@ import * as ImagePicker from "expo-image-picker";
 import axios from "axios";
 import { useNavigation } from "@react-navigation/native";
 import Styles from "./Styles";
+import { auth, createUserWithEmailAndPassword } from "../../firebase/firebaseConfig"; // Import Firebase Auth functions
 
 const Register = () => {
     const fields = [
@@ -74,8 +75,8 @@ const Register = () => {
             setLoading(true);
 
             try {
-                
-                const response = await axios.post('http://192.168.1.30:8000/users/', form, {
+                // Đăng ký người dùng trong Django
+                const response = await axios.post('http://192.168.1.47:8000/users/', form, {
                     headers: {
                         'Content-Type': 'multipart/form-data'
                     }
@@ -83,6 +84,13 @@ const Register = () => {
 
                 if (response.status === 201) {
                     console.log(response.data);
+
+                    // Đăng ký người dùng trong Firebase
+                    const firebaseEmail = user.email;
+                    const firebasePassword = user.password;
+                    
+                    await createUserWithEmailAndPassword(auth, firebaseEmail, firebasePassword);
+
                     nav.navigate("Login");
                 } else {
                     throw new Error(response.data.message || "Registration failed. Please try again.");

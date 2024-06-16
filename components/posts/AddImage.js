@@ -49,7 +49,7 @@ const AddImage = ({ navigation, route }) => {
 			formData.append("post", postId);
 
 			console.log("FormData:", formData);
-      const response = await fetch('http://192.168.1.30:8000/images/', {
+      const response = await fetch('http://192.168.1.47:8000/images/', {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`,

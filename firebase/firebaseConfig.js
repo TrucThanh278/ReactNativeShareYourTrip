@@ -1,22 +1,49 @@
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+import { initializeApp, getApps } from 'firebase/app';
+import { getAuth, 
+  initializeAuth, 
+  getReactNativePersistence, 
+  signInWithEmailAndPassword, 
+  createUserWithEmailAndPassword 
+} from 'firebase/auth';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getFirestore } from 'firebase/firestore';
 
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-	apiKey: "AIzaSyDfkO4ypfIZPmSktAt90HirTnIQcLsLG6o",
-	authDomain: "shareyourtrip-970f2.firebaseapp.com",
-	databaseURL: "https://shareyourtrip-970f2-default-rtdb.firebaseio.com",
-	projectId: "shareyourtrip-970f2",
-	storageBucket: "shareyourtrip-970f2.appspot.com",
-	messagingSenderId: "170664531754",
-	appId: "1:170664531754:web:192827e0826a97f39c3053",
-	measurementId: "G-80Y24RR14N",
+  apiKey: "AIzaSyCC4sTKgyGFWBIDhvgkptB-IDhUr1vFZTU",
+  authDomain: "chatshareyourtrip.firebaseapp.com",
+  databaseURL: "https://chatshareyourtrip-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "chatshareyourtrip",
+  storageBucket: "chatshareyourtrip.appspot.com",
+  messagingSenderId: "356887762747",
+  appId: "1:356887762747:android:d183f7fee21f65318a491e"
 };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+let app;
+if (getApps().length === 0) {
+  app = initializeApp(firebaseConfig);
+} else {
+  app = getApps()[0]; // Use the already initialized app
+}
+
+// Initialize Auth with persistence
+let auth;
+try {
+  auth = initializeAuth(app, {
+    persistence: getReactNativePersistence(AsyncStorage),
+  });
+} catch (error) {
+  if (error.code === 'auth/already-initialized') {
+    auth = getAuth(app);
+  } else {
+    throw error;
+  }
+}
+
+const db = getFirestore(app);
+export { auth,db,app,
+  signInWithEmailAndPassword, 
+  createUserWithEmailAndPassword };
+
+
+  
+

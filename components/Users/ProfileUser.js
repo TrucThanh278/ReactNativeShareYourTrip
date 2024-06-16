@@ -50,7 +50,7 @@ const ProfileUser = ({ route }) => {
                 if (Array.isArray(userPostsResponse.data.results)) {
                     const postsWithImages = await Promise.all(
                         userPostsResponse.data.results.map(async (post) => {
-                            const postImageUrl = `http://192.168.1.30:8000/posts/${post.id}/images`;
+                            const postImageUrl = `http://192.168.1.47:8000/posts/${post.id}/images`;
                             const postImageResponse = await authApi().get(postImageUrl);
                             return {
                                 ...post,
@@ -295,3 +295,5 @@ const styles = StyleSheet.create({
 });
 
 export default ProfileUser;
+
+
