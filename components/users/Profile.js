@@ -60,6 +60,7 @@ const Profile = ({ navigation }) => {
 							})
 						);
 
+
 						// Lọc chỉ những bài đăng của người dùng hiện tại
 						const filteredPosts = postsWithImages.filter(
 							(post) => post.user.id === userId

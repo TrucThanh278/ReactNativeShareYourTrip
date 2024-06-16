@@ -313,9 +313,9 @@ const PostInfo = ({ post, loading }) => {
 						key={i}
 						name={
 							i <= Math.round(averageRating) ? "star" : "star-o"
-						}
+						} // Sử dụng icon 'star' hoặc 'star-o' tùy thuộc vào giá trị averageRating
 						size={20}
-						color="#FFD700"
+						color="#FFD700" // Màu của icon sao
 					/>
 				);
 			}

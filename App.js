@@ -20,10 +20,11 @@ import RatingDetail from "./components/users/RatingDetail";
 import AdminHome from "./components/admin/AdminHome";
 import ManageReports from "./components/admin/ManageReports";
 import PostDetail from "./components/posts/PostDetail";
-import {
-	Provider as PaperProvider,
-	DefaultTheme as DefaultPaperTheme,
-} from "react-native-paper";
+import Chat from "./components/chat/Chat";
+import ChatDetail from "./components/chat/ChatDetail";
+import { Provider as PaperProvider, DefaultTheme as DefaultPaperTheme } from "react-native-paper";
+
+
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -82,6 +83,7 @@ const HomeStack = () => (
 		/>
 		<Stack.Screen name="RatingDetail" component={RatingDetail} />
 		<Stack.Screen name="PostDetail" component={PostDetail} />
+      <Stack.Screen name="ChatDetail" component={ChatDetail} options={{ title: "Chi Tiết Chat" }} />
 	</Stack.Navigator>
 );
 
@@ -219,6 +221,16 @@ const MyTab = () => {
 									),
 								}}
 							/>
+        <Tab.Screen
+                        name="Chat"
+                        component={Chat} 
+                        options={{
+                          title: "Nhắn tin",
+                          tabBarIcon: ({ color, size }) => (
+                            <MaterialCommunityIcons name="chat" color={color} size={size} />
+                          ),
+                        }}
+                      />
 							<Tab.Screen
 								name="Logout"
 								component={Logout}
@@ -271,7 +283,6 @@ const App = () => {
 	const [user, dispatch] = useReducer(MyUserReducer, null);
 
 	useEffect(() => {
-		// Giả lập người dùng đăng nhập cho mục đích trình diễn
 		const loginUser = {
 			username: "adminUser",
 			role: "admin",
