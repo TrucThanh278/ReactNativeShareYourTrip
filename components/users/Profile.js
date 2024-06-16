@@ -47,7 +47,7 @@ const Profile = ({ navigation }) => {
 						const postsWithImages = await Promise.all(
 							userPostsResponse.data.results.map(async (post) => {
 								// Lấy hình ảnh của bài đăng từ endpoint images
-								const postImageUrl = `http://192.168.1.14:8000/posts/${post.id}/images`;
+								const postImageUrl = `https://trucnguyen.pythonanywhere.com/${post.id}/images`;
 								const postImageResponse = await authApi(
 									token
 								).get(postImageUrl);
@@ -59,7 +59,6 @@ const Profile = ({ navigation }) => {
 								};
 							})
 						);
-
 
 						// Lọc chỉ những bài đăng của người dùng hiện tại
 						const filteredPosts = postsWithImages.filter(
