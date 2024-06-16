@@ -42,11 +42,11 @@ const Login = () => {
 			formData.append("password", user.password);
 			formData.append(
 				"client_id",
-				"cWEKdwdbCH7oeEhsJC45Vm1PC8TidTqWgAepyril"
+				"NBGY8GOxJnOewQJ05es21wSOz9P8Y5ifyOwoJ5rZ"
 			);
 			formData.append(
 				"client_secret",
-				"KbaM7exl5kDANplh66DgTludsQ9cufhMuNrxXeIPoazz0mBx205C83gCE9X1LPJAN1xOC025BZDisw9TmulfBsFpah1hBa5eS9nEldr4gu23MZmt01kmzxAl51VN41U0"
+				"jM9xMKCjF4LI0X70URB7ZA1R0dt1MPN4dS1CY9By4nys7lReFEktiGHNOwoQbnjKdnlI2oeCuxaYUgTxsAbvwdS2TdYIfUuMZ6OXc4tnf4touVtfICIync6GkD67KZpp"
 			);
 			formData.append("grant_type", "password");
 
@@ -82,14 +82,13 @@ const Login = () => {
 	};
 
 	return (
-		<ImageBackground source={require('./assets/images/user.jpeg')} 
-        style={Styles.imageBackground}
-        blurRadius={5} 
-        >
-			<View style={[MyStyles.container, MyStyles.margin]} >
-				<Text style={[Styles.titleLogin]}>
-					ĐĂNG NHẬP
-				</Text>
+		<ImageBackground
+			source={require("./assets/images/user.jpeg")}
+			style={Styles.imageBackground}
+			blurRadius={5}
+		>
+			<View style={[MyStyles.container, MyStyles.margin]}>
+				<Text style={[Styles.titleLogin]}>ĐĂNG NHẬP</Text>
 				{fields.map((f) => (
 					<TextInput
 						value={user[f.field]}
@@ -112,7 +111,7 @@ const Login = () => {
 					Đăng Nhập
 				</Button>
 			</View>
-		</ImageBackground>	
+		</ImageBackground>
 	);
 };
 

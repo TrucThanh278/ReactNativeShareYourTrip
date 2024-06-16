@@ -20,7 +20,7 @@ const PostDetail = ({ route }) => {
 	const [comments, setComments] = useState([]);
 	const [page, setPage] = useState(1);
 	const [hasNextPage, setHasNextPage] = useState(true);
-	const [replyTo, setReplyTo] = useState(null); // Thêm state để quản lý bình luận đang được phản hồi
+	const [replyTo, setReplyTo] = useState(null);
 	const [commentText, setCommentText] = useState("");
 	const postId = route.params?.postId;
 
@@ -69,7 +69,7 @@ const PostDetail = ({ route }) => {
 	};
 
 	useEffect(() => {
-		setPage(1); // Reset page về 1 khi postId thay đổi
+		setPage(1);
 	}, [postId]);
 
 	useEffect(() => {
@@ -121,7 +121,7 @@ const PostDetail = ({ route }) => {
 				endpoints["comments"](postId),
 				{
 					content: commentText,
-					parent_id: replyTo ? replyTo.id : null,
+					parent_comment: replyTo ? replyTo.id : null,
 				},
 				{
 					headers: {
@@ -155,10 +155,6 @@ const PostDetail = ({ route }) => {
 		} catch (err) {
 			console.log("Bình luận thất bại!!!", err);
 		}
-		// Hàm xử lý gửi bình luận
-		// Thêm logic gửi bình luận, sau đó xóa commentText và trạng thái replyTo
-		// setCommentText("");
-		// setReplyTo(null);
 	};
 
 	return (
