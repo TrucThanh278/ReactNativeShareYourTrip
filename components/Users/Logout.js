@@ -1,9 +1,8 @@
-
-import React, { useContext } from 'react';
-import { Button } from 'react-native-paper';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { MyDispatchContext } from '../../configs/Context';
-import axios from 'axios';
+import React, { useContext } from "react";
+import { Button } from "react-native-paper";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { MyDispatchContext } from "../../configs/Context";
+import axios from "axios";
 
 const Logout = ({ navigation }) => {
     const dispatch = useContext(MyDispatchContext);

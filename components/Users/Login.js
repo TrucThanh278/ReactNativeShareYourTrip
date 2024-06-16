@@ -84,7 +84,6 @@ const Login = () => {
           endpoints["current-user"]
         );
         console.info(userData.data);
-
         dispatch({
           type: "login",
           payload: userData.data,

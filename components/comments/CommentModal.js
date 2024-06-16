@@ -27,6 +27,7 @@ const CommentModal = ({ isVisible, onClose, postId }) => {
 	const [page, setPage] = useState(1);
 	const [hasNextPage, setHasNextPage] = useState(true);
 	const [commentText, setCommentText] = useState("");
+	const [replyingTo, setReplyingTo] = useState(null);
 
 	const loadComments = async (postId, page) => {
 		if (page > 0 && hasNextPage) {
@@ -61,25 +62,54 @@ const CommentModal = ({ isVisible, onClose, postId }) => {
 				);
 				return;
 			}
-			if (commentText.trim()) {
-				const response = await APIs.post(
-					endpoints["comments"](postId),
-					{
-						content: commentText,
-					},
-					{
-						headers: {
-							Authorization: `Bearer ${token}`,
-							"Content-Type": "application/json",
-						},
-					}
+			if (!commentText.trim()) {
+				Alert.alert(
+					"Thông báo,",
+					"Nội dung bình luận không được để trống!!!"
 				);
-				if (response.status === 201 || response.status === 200) {
+				return;
+			} else {
+				try {
+					const response = await APIs.post(
+						endpoints["comments"](postId),
+						{
+							content: commentText,
+							parent_comment: replyingTo ? replyingTo.id : null,
+						},
+						{
+							headers: {
+								Authorization: `Bearer ${token}`,
+								"Content-Type": "application/json",
+							},
+						}
+					);
+					const newComment = response.data;
+					if (replyingTo) {
+						// Tìm bình luận cha và thêm bình luận mới vào replies của nó
+						setComments((prevComments) =>
+							prevComments.map((comment) =>
+								comment.id === replyingTo.id
+									? {
+											...comment,
+											replies: [
+												...(comment.replies || []),
+												newComment,
+											],
+									  }
+									: comment
+							)
+						);
+					} else {
+						setComments((prevComments) => [
+							newComment,
+							...prevComments,
+						]);
+					}
+
 					setCommentText("");
-					setComments((prevComments) => [
-						response.data,
-						...prevComments,
-					]);
+					setReplyingTo(null);
+				} catch (error) {
+					console.log("Có lỗi khi gửi bình luận!!!", error);
 				}
 			}
 		} catch (err) {
@@ -100,7 +130,7 @@ const CommentModal = ({ isVisible, onClose, postId }) => {
 				<View style={{ flexDirection: "row", alignItems: "center" }}>
 					<Paragraph>{comment.content}</Paragraph>
 				</View>
-				<TouchableOpacity onPress={() => alert("Reply")}>
+				<TouchableOpacity onPress={() => setReplyingTo(comment)}>
 					<Text style={styles.replyButton}>Reply</Text>
 				</TouchableOpacity>
 				{comment.replies && comment.replies.length > 0 && (
@@ -152,6 +182,19 @@ const CommentModal = ({ isVisible, onClose, postId }) => {
 					keyboardVerticalOffset={80}
 					style={styles.inputContainer}
 				>
+					{replyingTo && (
+						<View style={styles.replyingToContainer}>
+							<Text style={styles.replyingToText}>
+								Đang trả lời {replyingTo.user.first_name}{" "}
+								{replyingTo.user.last_name}
+							</Text>
+							<TouchableOpacity
+								onPress={() => setReplyingTo(null)}
+							>
+								<Text style={styles.cancelReply}>Hủy</Text>
+							</TouchableOpacity>
+						</View>
+					)}
 					<View style={styles.textInputWrapper}>
 						<TextInput
 							style={styles.input}
@@ -230,6 +273,20 @@ const styles = StyleSheet.create({
 	},
 	sendIcon: {
 		marginLeft: 10,
+	},
+	replyingToContainer: {
+		flexDirection: "row",
+		alignItems: "center",
+		paddingHorizontal: 10,
+		paddingBottom: 10,
+	},
+	replyingToText: {
+		flex: 1,
+		fontStyle: "italic",
+	},
+	cancelReply: {
+		color: "blue",
+		fontWeight: "bold",
 	},
 });
 

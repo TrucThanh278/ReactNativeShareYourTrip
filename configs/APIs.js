@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const BASE_URL = "http://192.168.1.47:8000";
+const BASE_URL = "https://trucnguyen.pythonanywhere.com/";
+
 
 export const endpoints = {
 	register: "/users/",
@@ -11,16 +12,16 @@ export const endpoints = {
 	"follow-user": "/follow/",
 	"rating-post": "/rating/",
 	averageRating: (postId) => `/posts/${postId}/average_rating/`,
-	"reports": "/report/",
-	"users": "/users/",
+	reports: "/report/",
+	users: "/users/",
 	blockUser: (userId) => `/users/${userId}/block_user/`,
-	
 
 	images: "/images/",
 	hashtags: "/hashtags/",
 	posts: "/posts/",
 	postsDetails: (postId) => `/posts/${postId}`,
 	comments: (postId) => `/posts/${postId}/comments/`,
+	userinfo: (userID) => `/users/${userID}`,
 };
 
 export const authApi = (token) => {
