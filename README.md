@@ -6,6 +6,6 @@
 
 ## Login/Register Interface
 <p align="center">
-    <img src="./Image/DangKy.png">
-    <img src="./Image/DangNhap.png">
+    <img width="200px" src="./Image/DangKy.png">
+    <img width="200px" src="./Image/DangNhap.png">
 </p>
