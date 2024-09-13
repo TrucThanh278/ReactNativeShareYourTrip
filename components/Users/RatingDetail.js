@@ -9,7 +9,7 @@ import { Picker } from '@react-native-picker/picker';
 const RatingDetail = ({ route }) => {
   const navigation = useNavigation();
   const { postId } = route.params;
-  const [stars, setStars] = useState('1'); // Khởi tạo giá trị mặc định là '1'
+  const [stars, setStars] = useState('1'); 
   const dispatch = useContext(MyDispatchContext);
 
   const handleSubmit = async () => {
@@ -20,19 +20,17 @@ const RatingDetail = ({ route }) => {
         return;
       }
 
-      // Đảm bảo chúng ta có token hợp lệ
       console.log('Token lấy được:', token);
 
       const userId = await getCurrentUserId(token);
       console.log('User ID:', userId);
 
-      // Gửi đánh giá lên server
       const response = await APIs.post(
         endpoints['rating-post'],
         {
           rater: userId,
           post: postId,
-          stars: parseInt(stars), // Chuyển đổi stars từ chuỗi sang số
+          stars: parseInt(stars),
         },
         {
           headers: {
@@ -42,18 +40,14 @@ const RatingDetail = ({ route }) => {
         }
       );
 
-      // Ghi lại toàn bộ response để debug
       console.log('Response:', response);
 
-      // Kiểm tra nếu response có mã trạng thái là 200 hoặc 201 (thành công)
       if (response.status !== 200 && response.status !== 201) {
-        // Ghi lại chi tiết response nếu không thành công
         console.error('Response status:', response.status);
         console.error('Response data:', response.data);
         throw new Error('Network response was not ok');
       }
 
-      // Đánh giá thành công, hiển thị thông báo và quay lại trang trước đó
       Alert.alert('Thành công', 'Đánh giá đã được gửi thành công');
       navigation.goBack();
     } catch (error) {

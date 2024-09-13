@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Button, FlatList, StyleSheet } from 'react-native';
 import { collection, query, where, onSnapshot, addDoc, orderBy, serverTimestamp } from 'firebase/firestore';
-import { auth, db } from '../../firebase/firebaseConfig'; // Điều chỉnh đường dẫn đúng với cấu trúc file của bạn
+import { auth, db } from '../../firebase/firebaseConfig';
 
 const ChatDetail = ({ route }) => {
   const { user } = route.params;
@@ -10,20 +10,17 @@ const ChatDetail = ({ route }) => {
   const [newMessage, setNewMessage] = useState('');
 
   useEffect(() => {
-    // Tạo truy vấn để lấy tin nhắn giữa hai người dùng và sắp xếp theo timestamp
     const q = query(
       collection(db, 'messages'),
       where('participants', 'array-contains', currentUser.uid),
       orderBy('timestamp')
     );
 
-    // Nghe các thay đổi trong bộ sưu tập messages
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const msgs = querySnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }));
-      // Lọc các tin nhắn của hai người dùng cụ thể
       const filteredMsgs = msgs.filter(msg => msg.participants.includes(user.id));
       setMessages(filteredMsgs);
     });

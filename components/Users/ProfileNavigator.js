@@ -11,7 +11,6 @@ const ProfileNavigator = ({ navigation, route }) => {
   const user = useContext(MyUserContext);
 
   useEffect(() => {
-    // Kiểm tra xem userId từ route params có khớp với userId của user đang đăng nhập không
     setIsCurrentUser(user && user.id === userId);
     setIsLoading(false);
   }, [user, userId]);
@@ -21,10 +20,8 @@ const ProfileNavigator = ({ navigation, route }) => {
   }
 
   if (isCurrentUser) {
-    // Nếu userId trùng khớp với userId của user đang đăng nhập, hiển thị Profile
     return <Profile navigation={navigation} />;
   } else {
-    // Nếu userId không trùng khớp, hiển thị ProfileUser
     return <ProfileUser route={route} />;
   }
 };

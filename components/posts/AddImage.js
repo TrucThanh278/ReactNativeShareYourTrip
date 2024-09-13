@@ -50,7 +50,7 @@ const AddImage = ({ navigation, route }) => {
 
 			console.log("FormData:", formData);
 			const response = await fetch(
-				"https://trucnguyen.pythonanywhere.com/images/",
+				"http://192.168.1.47:8000/images/",
 				{
 					method: "POST",
 					headers: {

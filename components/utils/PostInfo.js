@@ -17,7 +17,7 @@ import PostImages from "../posts/PostImages";
 import CommentModal from "../comments/CommentModal";
 import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import APIs, { endpoints } from "../../configs/APIs";
+import APIs, { authApi, endpoints } from "../../configs/APIs";
 
 const PostInfo = ({ post, loading }) => {
 	const navigation = useNavigation();
@@ -33,22 +33,21 @@ const PostInfo = ({ post, loading }) => {
 
 	const fetchAverageRating = async (postId) => {
 		try {
-			const response = await fetch(
-				`https://trucnguyen.pythonanywhere.com/${postId}/average_rating/`
-			);
-			if (!response.ok) {
-				throw new Error("Network response was not ok");
-			}
-			const data = await response.json();
+			const token = await AsyncStorage.getItem("token");
+
+			const response = await authApi(token).get(endpoints.averageRating(postId));
+
+
+			const data = response.data;
 			setAverageRating(data.average_rating);
 		} catch (error) {
-			console.error("Error fetching average rating:", error);
 			Alert.alert(
 				"Error",
 				`Failed to fetch average rating: ${error.message}`
 			);
 		}
 	};
+
 
 	useEffect(() => {
 		fetchAverageRating(post.id);
@@ -63,9 +62,9 @@ const PostInfo = ({ post, loading }) => {
 						key={i}
 						name={
 							i <= Math.round(averageRating) ? "star" : "star-o"
-						} // Sử dụng icon 'star' hoặc 'star-o' tùy thuộc vào giá trị averageRating
+						}
 						size={20}
-						color="#FFD700" // Màu của icon sao
+						color="#FFD700"
 					/>
 				);
 			}

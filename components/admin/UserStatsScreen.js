@@ -38,7 +38,7 @@ const UserStatsScreen = ({ userStats, onClose, onBlockUser }) => {
       <View style={styles.userStatsContainer}>
         {Object.keys(userStats).map((userId) => (
           <View key={userId} style={styles.userStatItem}>
-            <Text>Người bị report: {userId}</Text> 
+            <Text>Người bị report: {userId}</Text>
             <Text>Người report: {userStats[userId]}</Text>
             <TouchableOpacity
               style={styles.blockButton}
@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 16,
-    backgroundColor: '#fff', // Background color white
+    backgroundColor: '#fff',
   },
   heading: {
     fontSize: 20,

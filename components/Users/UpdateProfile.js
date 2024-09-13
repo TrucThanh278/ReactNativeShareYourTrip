@@ -9,7 +9,7 @@ import {
 	Image,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { authApi, endpoints } from "../../configs/APIs"; // Import cấu hình API
+import { authApi, endpoints } from "../../configs/APIs";
 import MyStyles from "../../styles/MyStyles";
 import { MyDispatchContext, MyUserContext } from "../../configs/Context";
 import * as ImagePicker from "expo-image-picker";
@@ -29,7 +29,7 @@ const UpdateProfile = ({ navigation }) => {
 		address: user.address,
 		date_of_birth: user.date_of_birth,
 		password: "",
-		avatar: user.avatar, // Sử dụng avatar từ context người dùng
+		avatar: user.avatar,
 	});
 
 	const handleChange = (name, value) => {
@@ -62,17 +62,11 @@ const UpdateProfile = ({ navigation }) => {
 					name: "avatar.jpg",
 				});
 			}
-
-			const response = await fetch(
-				`https://trucnguyen.pythonanywhere.com${endpoints["current-user"]}`,
-				{
-					method: "PATCH",
-					headers: {
-						Authorization: `Bearer ${token}`,
-					},
-					body: formDataObj,
-				}
-			);
+			const response = await authApi(token).patch(endpoints["current-user"], formDataObj, {
+				headers: {
+					"Content-Type": "multipart/form-data",
+				},
+			});
 
 			const responseData = await response.json();
 
@@ -108,7 +102,7 @@ const UpdateProfile = ({ navigation }) => {
 			<ScrollView
 				style={[styles.background, MyStyles.margin, styles.marginBot]}
 			>
-				<TouchableRipple onPress={handleAvatarPick}>
+				<TouchableRipple >
 					<Text
 						style={[
 							MyStyles.margin,

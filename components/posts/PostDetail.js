@@ -137,12 +137,12 @@ const PostDetail = ({ route }) => {
 					prevComments.map((comment) =>
 						comment.id === replyTo.id
 							? {
-									...comment,
-									replies: [
-										...(comment.replies || []),
-										newComment,
-									],
-							  }
+								...comment,
+								replies: [
+									...(comment.replies || []),
+									newComment,
+								],
+							}
 							: comment
 					)
 				);

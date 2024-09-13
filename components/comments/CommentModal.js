@@ -85,17 +85,17 @@ const CommentModal = ({ isVisible, onClose, postId }) => {
 					);
 					const newComment = response.data;
 					if (replyingTo) {
-						// Tìm bình luận cha và thêm bình luận mới vào replies của nó
+
 						setComments((prevComments) =>
 							prevComments.map((comment) =>
 								comment.id === replyingTo.id
 									? {
-											...comment,
-											replies: [
-												...(comment.replies || []),
-												newComment,
-											],
-									  }
+										...comment,
+										replies: [
+											...(comment.replies || []),
+											newComment,
+										],
+									}
 									: comment
 							)
 						);

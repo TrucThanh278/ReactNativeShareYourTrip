@@ -82,18 +82,18 @@ const Post = ({ navigation }) => {
 	return (
 		<View style={[MyStyles.container, MyStyles.margin]}>
 			<View style={MyStyles.row}>
-			<Searchbar
-				style={MyStyles.searchBar}
-				placeholder="Tìm kiếm chuyến đi..."
-				onChangeText={(t) => search(t, setQ)}
-			/>
-			<Button
-				style={MyStyles.buttonPlan}
-				icon="plus-box-multiple"
-				onPress={() => navigation.navigate('CreatePost')}
-			>
-				Tạo
-			</Button>
+				<Searchbar
+					style={MyStyles.searchBar}
+					placeholder="Tìm kiếm chuyến đi..."
+					onChangeText={(t) => search(t, setQ)}
+				/>
+				<Button
+					style={MyStyles.buttonPlan}
+					icon="plus-box-multiple"
+					onPress={() => navigation.navigate('CreatePost')}
+				>
+					Tạo
+				</Button>
 			</View>
 			<ScrollView onScroll={loadMore}>
 				{loading && posts.length === 0 ? (

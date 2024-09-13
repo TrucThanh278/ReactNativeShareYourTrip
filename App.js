@@ -4,19 +4,19 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import Login from "./components/users/Login";
-import Register from "./components/users/Register";
-import Profile from "./components/users/Profile";
-import UpdateProfile from "./components/users/UpdateProfile";
-import Logout from "./components/users/Logout";
+import Login from "./components/Users/Login";
+import Register from "./components/Users/Register";
+import Profile from "./components/Users/Profile";
+import UpdateProfile from "./components/Users/UpdateProfile";
+import Logout from "./components/Users/Logout";
 import MyUserReducer from "./reducers/MyUserReducers";
 import { MyUserContext, MyDispatchContext } from "./configs/Context";
 import Post from "./components/posts/Post";
-import ProfileNavigator from "./components/users/ProfileNavigator";
+import ProfileNavigator from "./components/Users/ProfileNavigator";
 import CreatePost from "./components/posts/CreatePost";
 import AddImage from "./components/posts/AddImage";
 import CreateHashtagPost from "./components/posts/CreateHashtagPost";
-import RatingDetail from "./components/users/RatingDetail";
+import RatingDetail from "./components/Users/RatingDetail";
 import AdminHome from "./components/admin/AdminHome";
 import ManageReports from "./components/admin/ManageReports";
 import PostDetail from "./components/posts/PostDetail";
@@ -83,7 +83,7 @@ const HomeStack = () => (
 		/>
 		<Stack.Screen name="RatingDetail" component={RatingDetail} />
 		<Stack.Screen name="PostDetail" component={PostDetail} />
-      <Stack.Screen name="ChatDetail" component={ChatDetail} options={{ title: "Chi Tiết Chat" }} />
+		<Stack.Screen name="ChatDetail" component={ChatDetail} options={{ title: "Chi Tiết Chat" }} />
 	</Stack.Navigator>
 );
 
@@ -209,8 +209,8 @@ const MyTab = () => {
 								options={{
 									title:
 										user?.first_name +
-											" " +
-											user?.last_name || "Tài khoản",
+										" " +
+										user?.last_name || "Tài khoản",
 									headerShown: false,
 									tabBarIcon: ({ color, size }) => (
 										<MaterialCommunityIcons
@@ -221,16 +221,16 @@ const MyTab = () => {
 									),
 								}}
 							/>
-        <Tab.Screen
-                        name="Chat"
-                        component={Chat} 
-                        options={{
-                          title: "Nhắn tin",
-                          tabBarIcon: ({ color, size }) => (
-                            <MaterialCommunityIcons name="chat" color={color} size={size} />
-                          ),
-                        }}
-                      />
+							<Tab.Screen
+								name="Chat"
+								component={Chat}
+								options={{
+									title: "Nhắn tin",
+									tabBarIcon: ({ color, size }) => (
+										<MaterialCommunityIcons name="chat" color={color} size={size} />
+									),
+								}}
+							/>
 							<Tab.Screen
 								name="Logout"
 								component={Logout}

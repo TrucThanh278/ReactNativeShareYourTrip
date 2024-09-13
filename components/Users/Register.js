@@ -24,7 +24,9 @@ import Styles from "./Styles";
 import {
 	auth,
 	createUserWithEmailAndPassword,
-} from "../../firebase/firebaseConfig"; // Import Firebase Auth functions
+} from "../../firebase/firebaseConfig";
+
+import { authApi, endpoints } from "../../configs/APIs";
 
 const Register = () => {
 	const fields = [
@@ -95,9 +97,8 @@ const Register = () => {
 			setLoading(true);
 
 			try {
-				// Đăng ký người dùng trong Django
-				const response = await axios.post(
-					"https://trucnguyen.pythonanywhere.com/users/",
+				const response = await authApi().post(
+					endpoints.register,
 					form,
 					{
 						headers: {
@@ -109,7 +110,6 @@ const Register = () => {
 				if (response.status === 201) {
 					console.log(response.data);
 
-					// Đăng ký người dùng trong Firebase
 					const firebaseEmail = user.email;
 					const firebasePassword = user.password;
 
@@ -123,7 +123,7 @@ const Register = () => {
 				} else {
 					throw new Error(
 						response.data.message ||
-							"Registration failed. Please try again."
+						"Registration failed. Please try again."
 					);
 				}
 			} catch (ex) {

@@ -10,12 +10,12 @@ import {
 	TextInput,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { getFirestore, collection, getDocs } from "firebase/firestore"; // Import modular Firestore functions
-import { auth, db } from "../../firebase/firebaseConfig"; // Adjust the path based on your project structure
-import Icon from "react-native-vector-icons/FontAwesome"; // Ensure the correct import for FontAwesome
+import { getFirestore, collection, getDocs } from "firebase/firestore";
+import { auth, db } from "../../firebase/firebaseConfig";
+import Icon from "react-native-vector-icons/FontAwesome";
 
 const defaultAvatar =
-	"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSwdIVSqaMsmZyDbr9mDPk06Nss404fosHjLg&s"; // Path to default avatar image
+	"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSwdIVSqaMsmZyDbr9mDPk06Nss404fosHjLg&s";
 
 const Chat = () => {
 	const [users, setUsers] = useState([]);
@@ -34,7 +34,7 @@ const Chat = () => {
 						id: doc.id,
 						...doc.data(),
 					}))
-					.filter((user) => user.id !== currentUser.uid); // Filter out the current user from the list
+					.filter((user) => user.id !== currentUser.uid);
 
 				console.log("User List:", userList);
 				setUsers(userList);
@@ -45,7 +45,7 @@ const Chat = () => {
 		};
 
 		fetchUsers();
-	}, [currentUser]); // Add `currentUser` to the dependency array to rerun useEffect when it changes
+	}, [currentUser]);
 
 	const handleChat = (user) => {
 		navigation.navigate("ChatDetail", { user });
@@ -55,14 +55,12 @@ const Chat = () => {
 		setSearchQuery(text);
 	};
 
-	// Filter the user list based on search query
 	const filteredUsers = users.filter(
 		(user) =>
 			user.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
 			user.email.toLowerCase().includes(searchQuery.toLowerCase())
 	);
 
-	// Function to render avatar or default avatar if none is provided
 	const renderAvatar = (item) => {
 		if (item.avatar) {
 			return (

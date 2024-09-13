@@ -3,7 +3,7 @@ import { View, Text, Button, Alert, StyleSheet, ScrollView, Modal } from 'react-
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { authApi, endpoints } from '../../configs/APIs';
-import UserStatsScreen from './UserStatsScreen'; // Import UserStatsScreen component
+import UserStatsScreen from './UserStatsScreen';
 
 const ManageReports = () => {
   const [reports, setReports] = useState([]);
@@ -17,7 +17,7 @@ const ManageReports = () => {
         const storedToken = await AsyncStorage.getItem('token');
         if (storedToken) {
           setToken(storedToken);
-          fetchReports(storedToken); // Gọi hàm fetchReports ngay sau khi lấy token thành công
+          fetchReports(storedToken);
         } else {
           Alert.alert('Error', 'Token not found');
         }

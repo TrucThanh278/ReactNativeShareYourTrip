@@ -8,7 +8,7 @@ const ReportUserPage = ({ userId, token }) => {
     useEffect(() => {
         console.log('Token:', token);
         console.log('User ID:', userId);
-    }, []); // Chỉ chạy một lần sau khi component được render lần đầu tiên
+    }, []);
 
     const handleReport = async () => {
         if (!reportContent.trim()) {
@@ -27,10 +27,9 @@ const ReportUserPage = ({ userId, token }) => {
                 reported_user: userId,
                 content: reportContent
             });
-            // Kiểm tra nếu response có mã trạng thái thành công (200 hoặc 201)
             if (response.status === 200 || response.status === 201) {
                 Alert.alert('Report thành công', 'Bạn đã report thành công!');
-                setReportContent(''); // Xóa nội dung báo cáo sau khi thành công
+                setReportContent('');
             } else {
                 console.error('Response status:', response.status);
                 console.error('Response data:', response.data);

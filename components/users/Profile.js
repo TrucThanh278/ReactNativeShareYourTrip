@@ -1,18 +1,11 @@
 import React, { useEffect, useState, useContext } from "react";
-import {
-	View,
-	Image,
-	Text,
-	StyleSheet,
-	TouchableOpacity,
-	ScrollView,
-} from "react-native";
+import { View, Image, Text, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
 import { Button } from "react-native-paper";
 import { MyDispatchContext, MyUserContext } from "../../configs/Context";
 import MyStyles from "../../styles/MyStyles";
-import * as ImagePicker from "expo-image-picker";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { authApi, endpoints } from "../../configs/APIs"; // Import API configurations
+import * as ImagePicker from 'expo-image-picker';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { authApi, endpoints } from '../../configs/APIs';
 import Logout from "./Logout";
 
 const Profile = ({ navigation }) => {
@@ -20,61 +13,42 @@ const Profile = ({ navigation }) => {
 	const user = useContext(MyUserContext);
 	const [avatar, setAvatar] = useState(null);
 	const [posts, setPosts] = useState([]);
-	const [loading, setLoading] = useState(true); // State to manage loading state
-	const [postCount, setPostCount] = useState(0); // State to store the count of user's posts
+	const [loading, setLoading] = useState(true);
+	const [postCount, setPostCount] = useState(0);
 
 	useEffect(() => {
 		const fetchUserData = async () => {
 			try {
-				const token = await AsyncStorage.getItem("token");
+				const token = await AsyncStorage.getItem('token');
 				if (token) {
-					// Lấy thông tin người dùng hiện tại
-					const response = await authApi(token).get(
-						endpoints["current-user"]
-					);
+
+					const response = await authApi(token).get(endpoints['current-user']);
 					setAvatar(response.data.avatar);
 
-					// Lấy danh sách bài đăng của người dùng hiện tại
 					const userId = response.data.id;
-					const userPostsResponse = await authApi(token).get(
-						endpoints["posts"],
-						{ params: { user: userId } }
-					);
+					const userPostsResponse = await authApi(token).get(endpoints['posts'], { params: { user: userId } });
 
-					// Kiểm tra dữ liệu trả về có phù hợp không
 					if (Array.isArray(userPostsResponse.data.results)) {
-						// Xử lý từng bài đăng để lấy hình ảnh và hiển thị
 						const postsWithImages = await Promise.all(
 							userPostsResponse.data.results.map(async (post) => {
-								// Lấy hình ảnh của bài đăng từ endpoint images
-								const postImageUrl = `https://trucnguyen.pythonanywhere.com/${post.id}/images`;
-								const postImageResponse = await authApi(
-									token
-								).get(postImageUrl);
+								const postImageUrl = endpoints.postImages(post.id);
+								const postImageResponse = await authApi(token).get(postImageUrl);
 								return {
 									...post,
-									images: postImageResponse.data.map(
-										(image) => image.image
-									),
+									images: postImageResponse.data.map(image => image.image),
 								};
 							})
 						);
 
-						// Lọc chỉ những bài đăng của người dùng hiện tại
-						const filteredPosts = postsWithImages.filter(
-							(post) => post.user.id === userId
-						);
 
-						// Cập nhật state với danh sách bài đăng đã có hình ảnh
+						const filteredPosts = postsWithImages.filter(post => post.user.id === userId);
+
 						setPosts(filteredPosts);
-						setPostCount(filteredPosts.length); // Cập nhật số lượng bài đăng
+						setPostCount(filteredPosts.length);
 
 						setLoading(false);
 					} else {
-						console.error(
-							"User posts data structure is invalid:",
-							userPostsResponse.data
-						);
+						console.error("User posts data structure is invalid:", userPostsResponse.data);
 						setLoading(false);
 					}
 				}
@@ -97,102 +71,67 @@ const Profile = ({ navigation }) => {
 
 		if (!result.cancelled) {
 			setAvatar(result.uri);
-			// Here you can add logic to update the avatar on the server as well
+
 		}
 	};
 
 	if (!user || loading) {
-		return <Text>Loading...</Text>; // Render loading indicator until user and posts are fetched
+		return <Text>Loading...</Text>;
 	}
 
 	return (
 		<ScrollView style={[MyStyles.container, MyStyles.margin]}>
 			<View>
-				{/* Cover photo and Avatar section */}
 				<View>
-					{/* Cover photo (implement your logic here) */}
-					<Image
-						source={require("./assets/images/default_cover.jpg")}
-						style={styles.coverPhoto}
-					/>
+					<Image source={require('./assets/images/default_cover.jpg')} style={styles.coverPhoto} />
 
-					{/* Avatar section */}
 					<View style={[styles.position, styles.margin_avatar]}>
 						<TouchableOpacity onPress={pickAvatar}>
-							<Image
-								source={
-									avatar
-										? { uri: avatar }
-										: require("./assets/images/default_avatar.jpg")
-								}
-								style={styles.avatar}
-							/>
+							<Image source={avatar ? { uri: avatar } : require('./assets/images/default_avatar.jpg')} style={styles.avatar} />
 						</TouchableOpacity>
 					</View>
 				</View>
 
-				{/* User information section */}
 				<View style={{ marginTop: 25 }}>
-					<Text style={[styles.subject, styles.margin_left]}>
-						{" "}
-						{user.first_name} {user.last_name}
-					</Text>
+					<Text style={[styles.subject, styles.margin_left]}> {user.first_name} {user.last_name}</Text>
 					<View style={[MyStyles.row]}>
-						<Text style={[styles.text, MyStyles.margin]}>
-							Theo dõi: {user.followers}
-						</Text>
-						<Text style={[styles.text, MyStyles.margin]}>
-							Đang theo dõi: {user.following}
-						</Text>
+						<Text style={[styles.text, MyStyles.margin]}>Theo dõi: {user.followers}</Text>
+						<Text style={[styles.text, MyStyles.margin]}>Đang theo dõi: {user.following}</Text>
 					</View>
 					<View style={styles.ratingContainer}>
-						<Text style={[styles.text]}>
-							Báo cáo: {user.reported_user}{" "}
-						</Text>
+						<Text style={[styles.text]}>Báo cáo: {user.reported_user} </Text>
 					</View>
 					<Text style={styles.text}>Email: {user.email}</Text>
-					<Text style={styles.text}>
-						Số điện thoại: {user.phone_number}
-					</Text>
+					<Text style={styles.text}>Số điện thoại: {user.phone_number}</Text>
 
-					{/* Button to navigate to update profile screen */}
-					<Button
-						icon="pencil"
+
+					<Button icon="pencil"
 						style={[styles.button]}
 						buttonColor="rgb(79, 133, 13)"
-						mode="contained"
-						onPress={() => navigation.navigate("UpdateProfile")}
-					>
+						mode="contained" onPress={() => navigation.navigate('UpdateProfile')} >
 						Cập nhật hồ sơ
 					</Button>
 
-					{/* Logout button component */}
 					<Logout navigation={navigation} />
+
+
 				</View>
 
-				{/* Personal collection section */}
+
 				<View style={styles.collections}>
 					<Text style={styles.sectionTitle}>Bộ sưu tập cá nhân</Text>
 					<ScrollView horizontal style={{ height: 150 }}>
 						{posts && posts.length > 0 ? (
-							posts.map((post, index) =>
+							posts.map((post, index) => (
 								post.images.map((image, imgIndex) => (
-									<View
-										key={`${index}-${imgIndex}`}
-										style={styles.postContainer}
-									>
-										<Image
-											source={{ uri: image }}
-											style={styles.postImage}
-										/>
+									<View key={`${index}-${imgIndex}`} style={styles.postContainer}>
+										<Image source={{ uri: image }} style={styles.postImage} />
 										<View style={styles.overlay}>
-											<Text style={styles.overlayText}>
-												{post.title}
-											</Text>
+											<Text style={styles.overlayText}>{post.title}</Text>
 										</View>
 									</View>
 								))
-							)
+							))
 						) : (
 							<Text>No posts found</Text>
 						)}
@@ -201,10 +140,11 @@ const Profile = ({ navigation }) => {
 					<Text style={styles.sectionTitle}>Chuyến đi</Text>
 					<View style={styles.statItem}>
 						<Text style={styles.statLabel}>Đã lên kế hoạch</Text>
-						{/* Display number of posts */}
+
 						<Text style={styles.statValue}>{postCount}</Text>
 					</View>
 				</View>
+
 			</View>
 		</ScrollView>
 	);
@@ -229,7 +169,7 @@ const styles = StyleSheet.create({
 	},
 	text: {
 		marginBottom: 5,
-		marginLeft: 10,
+		marginLeft: 10
 	},
 	button: {
 		marginBottom: 5,
@@ -245,10 +185,10 @@ const styles = StyleSheet.create({
 	},
 	margin_avatar: {
 		marginTop: 30,
-		alignItems: "center",
+		alignItems: 'center',
 	},
 	margin_right: {
-		marginRight: 15,
+		marginRight: 15
 	},
 	collections: {
 		padding: 20,
@@ -256,7 +196,7 @@ const styles = StyleSheet.create({
 	sectionTitle: {
 		fontSize: 20,
 		fontWeight: "bold",
-		marginTop: 20,
+		marginTop: 20
 	},
 	postContainer: {
 		height: "100%",
@@ -298,8 +238,10 @@ const styles = StyleSheet.create({
 		color: "#888",
 	},
 	margin_left: {
-		marginLeft: 20,
-	},
+		marginLeft: 20
+	}
 });
 
 export default Profile;
+
+

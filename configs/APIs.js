@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "https://trucnguyen.pythonanywhere.com/";
+const BASE_URL = "http://192.168.100.243:8000";
 
 
 export const endpoints = {
@@ -15,7 +15,8 @@ export const endpoints = {
 	reports: "/report/",
 	users: "/users/",
 	blockUser: (userId) => `/users/${userId}/block_user/`,
-
+	deleteUser: "/api/logout",
+	postImages: (postId) => `/posts/${postId}/images`,
 	images: "/images/",
 	hashtags: "/hashtags/",
 	posts: "/posts/",

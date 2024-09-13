@@ -13,8 +13,8 @@ import MyStyles from "../../styles/MyStyles";
 import { FontAwesome } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { authApi, endpoints } from "../../configs/APIs"; // Import các cấu hình API
-import Logout from "../users/Logout";
+import { authApi, endpoints } from "../../configs/APIs";
+import Logout from "../Users/Logout";
 
 const AdminHome = ({ navigation }) => {
 	const dispatch = useContext(MyDispatchContext);
@@ -79,7 +79,7 @@ const AdminHome = ({ navigation }) => {
 						source={
 							coverPhoto
 								? { uri: coverPhoto }
-								: require("../users/assets/images/default_cover.jpg")
+								: require("../Users/assets/images/default_cover.jpg")
 						}
 						style={styles.coverPhoto}
 					/>
@@ -93,7 +93,7 @@ const AdminHome = ({ navigation }) => {
 							/>
 						) : (
 							<Image
-								source={require("../users/assets/images/default_cover.jpg")}
+								source={require("../Users/assets/images/default_cover.jpg")}
 								style={styles.avatar}
 							/>
 						)}

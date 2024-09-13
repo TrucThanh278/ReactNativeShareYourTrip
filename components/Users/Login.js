@@ -8,7 +8,7 @@ import MyStyles from "../../styles/MyStyles";
 import APIs, { endpoints, authApi } from "../../configs/APIs";
 import Styles from "./Styles";
 import { auth, signInWithEmailAndPassword, db } from "../../firebase/firebaseConfig";
-import { collection, setDoc, doc } from "firebase/firestore"; // Import Firestore functions
+import { collection, setDoc, doc } from "firebase/firestore";
 
 const Login = () => {
   const fields = [
@@ -49,11 +49,11 @@ const Login = () => {
       formData.append("password", user.password);
       formData.append(
         "client_id",
-        "cWEKdwdbCH7oeEhsJC45Vm1PC8TidTqWgAepyril"
+        "V8u4kn0ex1Na5T4qDRJlLYMLRNBpjOkOriuyR0hE"
       );
       formData.append(
         "client_secret",
-        "KbaM7exl5kDANplh66DgTludsQ9cufhMuNrxXeIPoazz0mBx205C83gCE9X1LPJAN1xOC025BZDisw9TmulfBsFpah1hBa5eS9nEldr4gu23MZmt01kmzxAl51VN41U0"
+        "DamEe7hg6nUarz7MkkNHObkv559zFcWgSG87dELpWkABX7riixYrlDjWwhHeNMde6HcKiQJS1hnMETxKNVIHkPb8kz48ayJQHFwj1KOW4LmvvXK0zyUxaMBhubZXj8n5"
       );
       formData.append("grant_type", "password");
 
@@ -63,16 +63,16 @@ const Login = () => {
         },
       });
 
-      // Lưu token vào AsyncStorage
+
       await AsyncStorage.setItem("token", res.data.access_token);
 
-      // Đăng nhập Firebase với email và mật khẩu
-      const firebaseEmail = user.email; // Lấy email từ trường email của form
+
+      const firebaseEmail = user.email;
       const firebasePassword = user.password;
       const userCredential = await signInWithEmailAndPassword(auth, firebaseEmail, firebasePassword);
       const firebaseUser = userCredential.user;
 
-      // Lưu thông tin người dùng vào Firestore
+
       const userDoc = doc(db, "users", firebaseUser.uid);
       await setDoc(userDoc, {
         email: firebaseUser.email,
@@ -89,7 +89,7 @@ const Login = () => {
           payload: userData.data,
         });
 
-        // Chuyển hướng sang màn hình Home
+
         nav.navigate("Home");
       }, 100);
     } catch (ex) {
@@ -101,9 +101,9 @@ const Login = () => {
   };
 
   return (
-    <ImageBackground source={require('./assets/images/user.jpeg')} 
+    <ImageBackground source={require('./assets/images/user.jpeg')}
       style={Styles.imageBackground}
-      blurRadius={5} 
+      blurRadius={5}
     >
       <View style={[MyStyles.container, MyStyles.margin]} >
         <Text style={[Styles.titleLogin]}>
@@ -131,7 +131,7 @@ const Login = () => {
           Đăng Nhập
         </Button>
       </View>
-    </ImageBackground>  
+    </ImageBackground>
   );
 };
 

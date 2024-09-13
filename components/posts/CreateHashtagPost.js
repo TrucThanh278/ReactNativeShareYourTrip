@@ -37,8 +37,8 @@ const CreateHashtagPost = ({ onAddHashtag }) => {
 
       if (response.data && response.data.id) {
         Alert.alert('Thành công', `Hashtag "${hashtag}" đã được tạo thành công`);
-        onAddHashtag({ id: response.data.id, hashtag }); // Gọi callback với hashtag mới
-        setHashtag(''); // Xóa nội dung trong TextInput sau khi tạo thành công
+        onAddHashtag({ id: response.data.id, hashtag });
+        setHashtag('');
       }
     } catch (error) {
       console.error('Lỗi khi tạo hashtag:', error.response?.data || error.message);

@@ -127,20 +127,18 @@ const CreatePost = ({ navigation, route }) => {
         onChangeText={setDescription}
         multiline
       />
-      {/* Render CreateHashtagPost component */}
       <CreateHashtagPost onAddHashtag={handleAddHashtag} />
-      {/* Hiển thị danh sách các hashtag đã tạo */}
       <FlatList
-  data={createdHashtags}
-  keyExtractor={(item, index) => index.toString()}
-  renderItem={({ item }) => (
-    <TouchableOpacity onPress={() => toggleSelectHashtag(item)}>
-      <Text style={{ color: selectedHashtagIds.includes(item.id) ? 'blue' : 'black' }}>
-        {item.hashtag}
-      </Text>
-    </TouchableOpacity>
-  )}
-/>
+        data={createdHashtags}
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={({ item }) => (
+          <TouchableOpacity onPress={() => toggleSelectHashtag(item)}>
+            <Text style={{ color: selectedHashtagIds.includes(item.id) ? 'blue' : 'black' }}>
+              {item.hashtag}
+            </Text>
+          </TouchableOpacity>
+        )}
+      />
 
       <Button
         title="Đăng bài viết"

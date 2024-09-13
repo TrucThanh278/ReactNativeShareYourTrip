@@ -3,6 +3,7 @@ import { Button } from "react-native-paper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { MyDispatchContext } from "../../configs/Context";
 import axios from "axios";
+import { authApi, endpoints } from '../../configs/APIs';
 
 const Logout = ({ navigation }) => {
 	const dispatch = useContext(MyDispatchContext);
@@ -11,26 +12,15 @@ const Logout = ({ navigation }) => {
 		try {
 			const token = await AsyncStorage.getItem("token");
 
-			// Gửi yêu cầu để xóa accessToken từ backend
 			if (token) {
-				await axios.delete(
-					"https://trucnguyen.pythonanywhere.com/api/logout",
-					{
-						headers: {
-							Authorization: `Bearer ${token}`,
-						},
-					}
-				);
+				await authApi(token).delete(endpoints.deleteUser);
 			}
 
-			// Xóa accessToken từ AsyncStorage
 			await AsyncStorage.removeItem("token");
 			console.log("Token removed successfully from AsyncStorage");
 
-			// Dispatch action để đánh dấu người dùng đã logout
 			dispatch({ type: "logout" });
 
-			// Chuyển hướng người dùng đến màn hình đăng nhập
 			navigation.navigate("Login");
 		} catch (e) {
 			console.error(
